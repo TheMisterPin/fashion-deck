@@ -1,29 +1,42 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+"use client";
 
-import React, { useState, useEffect, useRef } from "react"
-import axios from 'axios'
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { env, AutoModel, AutoProcessor, PreTrainedModel, Processor } from "@xenova/transformers";
+import "onnxruntime-web";
+import { processImage } from "@/lib/process";
 import {
-  env,
-  AutoModel,
-  AutoProcessor,
-} from "@xenova/transformers"
-import "onnxruntime-web"
-import { processImage } from "@/lib/process"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { motion, AnimatePresence } from "framer-motion"
-import { useForm, Controller } from "react-hook-form"
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { motion, AnimatePresence } from "framer-motion";
+import { useForm, Controller } from "react-hook-form";
+// Extend the Navigator interface to add the `gpu` property
+interface MyNavigator extends Navigator {
+  gpu?: any;
+}
 
 export default function BackgroundRemover() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const modelRef = useRef(null)
-  const processorRef = useRef(null)
+  const modelRef = useRef<PreTrainedModel | null>(null);
+  const processorRef = useRef<Processor | null>(null);
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -31,52 +44,59 @@ export default function BackgroundRemover() {
       file: null,
       type: "",
     },
-  })
+  });
 
   useEffect(() => {
-    (async () => {
-      try {
-        if (!navigator.gpu) {
-          throw new Error("WebGPU is not supported in this browser.")
-        }
-        const model_id = "Xenova/modnet"
-        env.backends.onnx.wasm.proxy = false
-        modelRef.current ??= await AutoModel.from_pretrained(model_id, {
-          device: "webgpu",
-        })
-        processorRef.current ??= await AutoProcessor.from_pretrained(model_id)
-      } catch (err) {
-console.log(err)      }
-      setIsLoading(false)
-    })()
-  }, [])
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+      // Ensure this code runs only on the client-side
+      (async () => {
+        try {
 
-  const onSubmit = async (data) => {
-    setIsProcessing(true)
+          const model_id = "Xenova/modnet";
+          env.backends.onnx.wasm.proxy = false;
+
+          modelRef.current ??= await AutoModel.from_pretrained(model_id, {
+            device: "webgpu",
+          } as any); // Cast to `any` to bypass TypeScript error
+
+          processorRef.current ??= await AutoProcessor.from_pretrained(model_id);
+        } catch (err) {
+          console.log(err);
+        }
+        setIsLoading(false);
+      })();
+    }
+  }, []);
+
+  const onSubmit = async (data: { name: string; file: File | null; type: string }) => {
+    setIsProcessing(true);
 
     try {
-      const processedFile = await processImage(data.file)
+      if (data.file) {
+        const processedFile = await processImage(data.file);
 
-      const formData = new FormData()
-      formData.append('image', processedFile)
-      formData.append('key', process.env.NEXT_PUBLIC_IMGBB_API_KEY!)
+        const formData = new FormData();
+        formData.append("image", processedFile);
+        formData.append("key", process.env.NEXT_PUBLIC_IMGBB_API_KEY!);
 
-      const response = await axios.post('https://api.imgbb.com/1/upload', formData)
-      
-      console.log({
-        name: data.name,
-        image: response.data.data.url,
-        type: data.type
-      })
+        const response = await axios.post("https://api.imgbb.com/1/upload", formData);
 
-      setIsOpen(false)
+        console.log({
+          name: data.name,
+          image: response.data.data.url,
+          type: data.type,
+        });
+
+        setIsOpen(false);
+      } else {
+        throw new Error("File is required.");
+      }
     } catch (uploadError) {
-      console.error('Error processing or uploading image:', uploadError)
+      console.error("Error processing or uploading image:", uploadError);
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
-
+  };
 
   if (isLoading) {
     return (
@@ -86,7 +106,7 @@ console.log(err)      }
           <p className="text-lg">Loading background removal model...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -94,7 +114,9 @@ console.log(err)      }
       <div className="max-w-6xl mx-auto text-center">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="font-bold border-2">Add New Item</Button>
+            <Button variant="outline" className="font-bold border-2">
+              Add New Item
+            </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -106,12 +128,7 @@ console.log(err)      }
                 control={control}
                 rules={{ required: "Name is required" }}
                 render={({ field }) => (
-                  <Input
-                    id="name"
-                    placeholder="Name"
-                    {...field}
-                    className="col-span-3"
-                  />
+                  <Input id="name" placeholder="Name" {...field} className="col-span-3" />
                 )}
               />
               <Controller
@@ -122,7 +139,11 @@ console.log(err)      }
                   <Input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => onChange(e.target.files[0])}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        onChange(e.target.files[0]);
+                      }
+                    }}
                     {...field}
                     className="col-span-3"
                   />
@@ -168,5 +189,5 @@ console.log(err)      }
         )}
       </div>
     </div>
-  )
+  );
 }

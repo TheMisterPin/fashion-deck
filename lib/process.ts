@@ -10,7 +10,6 @@ const model_id = "Xenova/modnet";
 env.backends.onnx.wasm.proxy = false;
 
 const model = await AutoModel.from_pretrained(model_id, {
-  device: "webgpu",
 });
 const processor = await AutoProcessor.from_pretrained(model_id);
 
@@ -45,7 +44,7 @@ export async function processImage(image: File): Promise<File> {
   }
   ctx.putImageData(pixelData, 0, 0);
   // Convert canvas to blob
-  const blob = await new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(), "image/png"));
+  const blob: Blob = await new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(), "image/png"));
   const [fileName] = image.name.split(".");
   const processedFile = new File([blob], `${fileName}-bg-blasted.png`, { type: "image/png" });
   return processedFile;
