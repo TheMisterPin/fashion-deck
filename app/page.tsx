@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
@@ -18,14 +19,13 @@ import { useForm, Controller } from "react-hook-form"
 
 export default function BackgroundRemover() {
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
   const modelRef = useRef(null)
   const processorRef = useRef(null)
 
-  const { control, handleSubmit, setValue } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       name: "",
       file: null,
@@ -46,8 +46,7 @@ export default function BackgroundRemover() {
         })
         processorRef.current ??= await AutoProcessor.from_pretrained(model_id)
       } catch (err) {
-        setError(err)
-      }
+console.log(err)      }
       setIsLoading(false)
     })()
   }, [])
@@ -78,16 +77,6 @@ export default function BackgroundRemover() {
     }
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-white bg-black">
-        <div className="text-center">
-          <h2 className="mb-2 text-4xl">ERROR</h2>
-          <p className="text-xl max-w-[500px]">{error.message}</p>
-        </div>
-      </div>
-    )
-  }
 
   if (isLoading) {
     return (
