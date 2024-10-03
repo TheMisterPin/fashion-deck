@@ -26,7 +26,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
 // Extend the Navigator interface to add the `gpu` property
-interface MyNavigator extends Navigator {
+export interface MyNavigator extends Navigator {
   gpu?: any;
 }
 
@@ -53,7 +53,6 @@ export default function BackgroundRemover() {
         try {
 
           const model_id = "Xenova/modnet";
-          env.backends.onnx.wasm.proxy = false;
 
           modelRef.current ??= await AutoModel.from_pretrained(model_id, {
             device: "webgpu",

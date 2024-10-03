@@ -1,5 +1,4 @@
 import {
-  env,
   AutoModel,
   AutoProcessor,
   RawImage,
@@ -7,7 +6,6 @@ import {
 import { db } from './db';
 
 const model_id = "Xenova/modnet";
-env.backends.onnx.wasm.proxy = false;
 
 const model = await AutoModel.from_pretrained(model_id, {
 });
