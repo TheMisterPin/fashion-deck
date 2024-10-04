@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ClothingType {
+  SHIRT
+  PANT
+  JACKET
+  JUMPER
+  SHOE
+}
+
+enum Color {
+  RED
+  BLUE
+  BROWN
+  BEIGE
+  GREEN
+  BLACK
+  WHITE
+  YELLOW
+}
+
+enum Style {
+  CASUAL
+  WORK
+  FORMAL
+}
+
+model Outfit {
+  id          Int      @id @default(autoincrement())
+  picture     String?
+  timesWorn   Int      @default(0)
+  isUsed      Boolean  @default(false)
+  isAvailable Boolean  @default(true)
+  isWorn      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items OutfitItem[]
+}
+
+model OutfitItem {
+  outfitId       Int
+  clothingItemId Int
+
+  outfit       Outfit       @relation(fields: [outfitId], references: [id])
+  clothingItem ClothingItem @relation(fields: [clothingItemId], references: [id])
+
+  @@id([outfitId, clothingItemId])
+  @@index([clothingItemId])
+}
+
+model ClothingItem {
+  id          Int          @id @default(autoincrement())
+  type        ClothingType
+  name        String?
+  color       Color?
+  picture     String?
+  timesWorn   Int          @default(0)
+  lastWorn    DateTime?
+  isFavorite  Boolean      @default(false)
+  isAvailable Boolean      @default(true)
+  isDeleted   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  outfits OutfitItem[]
+
+  // Updated relations with proper relation names
+  wardrobes WardrobeItem[] @relation("ClothingItemToWardrobeItem")
+  favorites FavoriteItem[] @relation("ClothingItemToFavoriteItem")
+
+  wornWith WornWithItem[] @relation("ItemWornWith")
+  wornBy   WornWithItem[] @relation("WornWithItem")
+
+  @@index([isAvailable])
+  @@index([isFavorite])
+  @@index([color])
+}
+
+model WornWithItem {
+  itemId         Int
+  wornWithItemId Int
+
+  item         ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id])
+  wornWithItem ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id])
+
+  @@id([itemId, wornWithItemId])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  clerkId   String?   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wardrobe  WardrobeItem[]
+  favorites FavoriteItem[]
+}
+
+model WardrobeItem {
+  userId         Int
+  clothingItemId Int
+
+  user         User         @relation(fields: [userId], references: [id])
+  clothingItem ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id])
+
+  @@id([userId, clothingItemId])
+}
+
+model FavoriteItem {
+  userId         Int
+  clothingItemId Int
+
+  user         User         @relation(fields: [userId], references: [id])
+  clothingItem ClothingItem @relation("ClothingItemToFavoriteItem", fields: [clothingItemId], references: [id])
+
+  @@id([userId, clothingItemId])
+}
