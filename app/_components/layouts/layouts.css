@@ -1,0 +1,99 @@
+/* components/Wardrobe.module.css */
+
+:root {
+    --gap: 1.2em;
+}
+
+.cabinet {
+    width: 72em;
+    height: 80%;
+    padding: var(--gap);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: var(--gap);
+    background-repeat: no-repeat;
+    background-image:
+        radial-gradient(circle at top right, rgba(0, 0, 0, 0.2) 10%, transparent 20%),
+        radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.3) 10%, transparent 40%),
+        radial-gradient(circle at 7% 0, rgba(0, 0, 0, 0.3) 3%, transparent 10%),
+        radial-gradient(circle at 85% 80%, rgba(0, 0, 0, 0.3) 10%, transparent 20%),
+        linear-gradient(to right, transparent 15%, rgba(0, 0, 0, 0.17) 20%, transparent 25%),
+        linear-gradient(75deg, transparent 40%, rgba(0, 0, 0, 0.2) 50%, transparent 60%),
+        linear-gradient(to bottom,
+            transparent calc(var(--gap) - 0.1em),
+            rgba(0, 0, 0, 0.25) calc(var(--gap) - 0.1em),
+            rgba(0, 0, 0, 0.25) calc(var(--gap) + 0.2em),
+            transparent calc(var(--gap) + 0.5em)),
+        linear-gradient(to top,
+            transparent var(--gap),
+            rgba(0, 0, 0, 0.25) var(--gap),
+            rgba(0, 0, 0, 0.25) calc(var(--gap) + 0.2em),
+            transparent calc(var(--gap) + 0.4em)),
+        repeating-linear-gradient(to bottom,
+            transparent,
+            transparent 0.2em,
+            rgba(0, 0, 0, 0.11) 0.3em,
+            transparent 0.5em),
+        linear-gradient(130deg, #9b783a, #675b0d);
+    border-radius: 0.2em;
+    box-shadow: 3.2em 3.2em 8em 3.2em rgba(0, 0, 0, 0.6),
+        12.8em 12.8em 9.6em rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+@media screen and (min-height: 500px) {
+    .cabinet {
+        height: 42em;
+    }
+}
+
+.cabinet div::before,
+.cabinet div::after {
+    content: '';
+    position: absolute;
+}
+
+.cabinet>div {
+    background-color: #babdb5;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.cabinet>div>div {
+    position: absolute;
+}
+
+/* Shelves */
+.shelf {
+    background-image: linear-gradient(35deg,
+            #120902 15%,
+            #2d1606 50%,
+            #432109 100%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.7) 20%, transparent 35%),
+        linear-gradient(to top, rgba(0, 0, 0, 0.6) 30%, transparent 60%),
+        repeating-linear-gradient(to right,
+            transparent,
+            transparent 5px,
+            rgba(0, 0, 0, 0.05) 5px,
+            rgba(0, 0, 0, 0.1) 10px);
+    background-size: 100% 1.9em, 100% 100%, 100% 100%, 100% 100%;
+}
+
+.box {
+    background-color: #f4f7ee;
+    background-image: linear-gradient(155deg,
+    #a46c04 1.5em,
+            #8f6414 2.5em,
+            #8b6e2b 100%),
+        linear-gradient(to bottom left, rgba(97, 89, 77, 0.3) 40%, transparent 75%),
+        repeating-linear-gradient(45deg,
+            transparent,
+            transparent 5px,
+            rgba(0, 0, 0, 0.05) 5px,
+            rgba(0, 0, 0, 0.1) 10px);
+    background-size: 100% 2.4em, 100% 100%, 100% 100%;
+    background-position: 0 100.3%, top left, top left;
+    overflow: hidden;
+}
+
