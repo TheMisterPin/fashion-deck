@@ -1,7 +1,9 @@
-import Cabinet from './_components/layouts/wardrobe-layout'
 
-export default function Wardrobe() {
+
+export default function FashionDeck() {
   return (
-<Cabinet/>
+    <div>
+      FashionDeck
+    </div>
   )
 }

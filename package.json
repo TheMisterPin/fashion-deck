@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.7.1",
     "@huggingface/transformers": "3.0.0-alpha.19",
     "@prisma/client": "5.20.0",
     "@radix-ui/react-dialog": "^1.1.2",
