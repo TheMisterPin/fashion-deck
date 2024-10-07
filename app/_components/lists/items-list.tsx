@@ -4,17 +4,13 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Card, CardContent } from "@/components/ui/card"
 
-type Item = {
-  name: string
-  type: 'top' | 'pants' | 'shoes'
-  image: string
-}
 
 type ItemListProps = {
-  items: Item[]
+  items: ClothingItem[]
 }
 
 export default function ItemList({ items }: ItemListProps) {
+  if (items.length === 0) return <p>No items found.</p>
   return (
     <div className="grid grid-cols-3 gap-4 mt-8">
       {items.map((item, index) => (
@@ -26,7 +22,7 @@ export default function ItemList({ items }: ItemListProps) {
         >
           <Card>
             <CardContent className="p-4">
-              <Image src={item.image} alt={item.name} width={300} height={100} className="w-full h-32 object-cover mb-2" />
+              <Image src={item.picture || ''} alt={item.name || "image for the clothing"} width={300} height={100} className="w-full h-32 object-cover mb-2" />
               <h3 className="font-bold">{item.name}</h3>
               <p className="text-sm text-gray-500">{item.type}</p>
             </CardContent>
