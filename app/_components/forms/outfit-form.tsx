@@ -1,39 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // components/OutfitForm.tsx
 
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from 'axios';
 
-type ClothingItem = {
-  id: number;
-  name: string;
-  type: string;
-  color: string;
-  picture: string;
-  // ...other fields
-};
-
-type OutfitFormInputs = {
-  outfitParts: number[]; // IDs of selected clothing items
-  // We handle images separately
-};
 
 type OutfitFormProps = {
-  onSubmitSuccess: (newOutfit: any) => void;
+  onSubmitSuccess: () => void;
 };
 
-const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY as string;
-
 export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
-  const { handleSubmit } = useForm<OutfitFormInputs>();
   const [wardrobeItems, setWardrobeItems] = useState<ClothingItem[]>([]);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [pictureFile, setPictureFile] = useState<File | null>(null);
-  const [previewFiles, setPreviewFiles] = useState<File[]>([]);
+  const [selectedItems, setSelectedItems] = useState<ClothingItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Fetch wardrobe items
@@ -50,6 +29,15 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
     fetchWardrobeItems();
   }, []);
 
+  // Handle item selection
+  const handleSelect = (item: ClothingItem) => {
+    setSelectedItems((prev) => {
+      // Remove any previously selected item of the same type
+      const filtered = prev.filter((i) => i.type !== item.type);
+      return [...filtered, item];
+    });
+  };
+
   // Handle form submission
   const onSubmit = async () => {
     if (selectedItems.length === 0) {
@@ -59,24 +47,11 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
 
     setLoading(true);
     try {
-      // Upload picture if provided
-      let pictureUrl = '';
-      if (pictureFile) {
-        pictureUrl = await uploadToImgbb(pictureFile);
-      }
-
-      // Upload preview images if provided
-      const previewUrls: string[] = [];
-      for (const file of previewFiles) {
-        const url = await uploadToImgbb(file);
-        previewUrls.push(url);
-      }
-
       // Prepare data
       const outfitData = {
-        outfitParts: selectedItems,
-        picture: pictureUrl || null,
-        preview: previewUrls.length > 0 ? previewUrls : null,
+        outfitParts: selectedItems.map((item) => item.id),
+        picture: null, // No picture for now
+        preview: selectedItems.map((item) => item.picture), // Use pictures of selected items
       };
 
       // Send POST request to the endpoint
@@ -84,7 +59,7 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
 
       if (response.status === 201) {
         // Success
-        onSubmitSuccess(response.data.outfit);
+        onSubmitSuccess();
       } else {
         throw new Error('Failed to create outfit');
       }
@@ -96,80 +71,45 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
     }
   };
 
-  // Handle item selection
-  const handleItemSelection = (itemId: number) => {
-    setSelectedItems((prev) =>
-      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
-    );
-  };
-
-  // Upload images to ImgBB
-  const uploadToImgbb = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('image', file);
-    formData.append('key', IMGBB_API_KEY);
-
-    const response = await axios.post(`https://api.imgbb.com/1/upload`, formData);
-    if (response.status !== 200) {
-      throw new Error('Failed to upload image to ImgBB');
-    }
-    return response.data.data.url;
-  };
+  // Swiper component
+  const Swiper = ({ items, type }: { items: ClothingItem[]; type: string }) => (
+    <div className="flex overflow-x-auto space-x-4 p-4 bg-gray-100 rounded-lg">
+      {items
+        .filter((item) => item.type === type)
+        .map((item) => (
+          <div
+            key={item.id}
+            className={`flex-shrink-0 w-24 h-24 rounded cursor-pointer border ${
+              selectedItems.some((selectedItem) => selectedItem.id === item.id)
+                ? 'border-blue-500'
+                : 'border-transparent'
+            }`}
+            style={{
+              backgroundImage: `url(${item.picture})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+            onClick={() => handleSelect(item)}
+          >
+            <span className="sr-only">{`${item.name} (${item.color} ${item.type})`}</span>
+          </div>
+        ))}
+    </div>
+  );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Clothing Items Selection */}
-      <div>
-        <Label>Select Clothing Items:</Label>
-        <div className="grid grid-cols-2 gap-4 max-h-64 overflow-y-auto">
-          {wardrobeItems.map((item) => (
-            <div key={item.id} className="flex items-center">
-              <input
-                type="checkbox"
-                id={`item-${item.id}`}
-                checked={selectedItems.includes(item.id)}
-                onChange={() => handleItemSelection(item.id)}
-              />
-              <Label htmlFor={`item-${item.id}`} className="ml-2">
-                {item.name} ({item.type})
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Picture Upload */}
-      <div>
-        <Label htmlFor="picture">Picture</Label>
-        <Input
-          id="picture"
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
-              setPictureFile(e.target.files[0]);
-            }
-          }}
-        />
-      </div>
-      {/* Preview Images Upload */}
-      <div>
-        <Label htmlFor="preview">Preview Images</Label>
-        <Input
-          id="preview"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={(e) => {
-            if (e.target.files) {
-              setPreviewFiles(Array.from(e.target.files));
-            }
-          }}
-        />
-      </div>
-      {/* Submit Button */}
-      <Button type="submit" disabled={loading}>
-        {loading ? 'Creating Outfit...' : 'Create Outfit'}
+    <div className="space-y-6">
+      <Label>Select Items:</Label>
+      <Swiper items={wardrobeItems} type="SHIRT" />
+      <Swiper items={wardrobeItems} type="PANT" />
+      <Swiper items={wardrobeItems} type="SHOE" />
+      <Button
+        className="mt-6 w-full"
+        onClick={onSubmit}
+        disabled={loading || selectedItems.length === 0}
+      >
+        {loading ? 'Creating Outfit...' : 'Add Outfit'}
       </Button>
-    </form>
+    </div>
   );
 }
