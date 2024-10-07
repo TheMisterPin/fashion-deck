@@ -1,19 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// components/AddOutfitModal.tsx
 
 import React, { useState } from 'react';
-import Modal from '../../../components/ui/modal';
+import Modal from '@/components/ui/modal';
 import OutfitForm from '../forms/outfit-form';
 
 
-type AddOutfitModalProps = {
-  addOutfit: (outfit: any) => void;
-};
-
-export default function AddOutfitModal({ addOutfit }: AddOutfitModalProps) {
+export default function AddOutfitModal() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleFormSubmit = (newOutfit: any) => {
-    addOutfit(newOutfit);
+  const handleFormSubmit = () => {
     setIsOpen(false);
   };
 
