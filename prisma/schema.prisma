@@ -34,9 +34,11 @@ enum Style {
 
 model Outfit {
   id          Int      @id @default(autoincrement())
+
   picture     String?
   preview     String[]
   timesWorn   Int      @default(0)
+  lastWorn    DateTime?
   isUsed      Boolean  @default(false)
   isAvailable Boolean  @default(true)
   isWorn      Boolean  @default(false)
@@ -44,8 +46,8 @@ model Outfit {
   updatedAt   DateTime @updatedAt
 
   items  OutfitItem[]
-  User   User?        @relation(fields: [userId], references: [id])
-  userId Int?
+  User   User?        @relation(fields: [userId], references: [clerkId])
+  userId String?
 }
 
 model OutfitItem {
@@ -73,9 +75,7 @@ model ClothingItem {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
-  outfits OutfitItem[]
-
-  // Updated relations with proper relation names
+  outfits   OutfitItem[]
   wardrobes WardrobeItem[] @relation("ClothingItemToWardrobeItem")
   favorites FavoriteItem[] @relation("ClothingItemToFavoriteItem")
 
@@ -88,8 +88,9 @@ model ClothingItem {
 }
 
 model WornWithItem {
-  itemId         Int
-  wornWithItemId Int
+  itemId           Int
+  wornWithItemId   Int
+  timesWornTogether Int    @default(1)
 
   item         ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id])
   wornWithItem ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id])
