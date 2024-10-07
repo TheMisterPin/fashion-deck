@@ -17,7 +17,7 @@ async function createWardrobeItem(userId: string, clothingItemId: number) {
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
   const data = await req.json(); 
-  const { type, picture, color, name } = data;
+  const { type, image, color, name } = data;
 
   if (!userId) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const newItem = await prisma.clothingItem.create({
       data: {
         type: type.toUpperCase(), 
-        picture,
+        picture : image,
         color: color.toUpperCase(), 
         name,
       },
