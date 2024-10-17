@@ -4,29 +4,28 @@ import AddItemModal from '@/app/_components/forms/add-item-modal'
 import ItemList from '@/app/_components/lists/items-list'
 import axios from 'axios'
 import { cerateNewClothigItem } from '@/app/controllers/clothing'
+import { getUserWardrobe } from '@/app/controllers/wardrobe'
 
 
-const login = async () => {
-  const response = await axios.post('/api/users/login')
-  const user = await response.data 
-  return user
-}
+
+
 const addItem = async (item: Item) => {
    await cerateNewClothigItem({item})
   
 }
 
 export default function ItemManager() {
-  const [wardrobe, setWardobe] = useState<ClothingItem[]>([])
-  
+  const [wardrobe, setWardobe] = useState([])
+const login = async () => {
+  const response = await axios.post('/api/users/login')
+  const user = await response.data.user 
+  const dbWardrobe = user.wardrobe
+  setWardobe(dbWardrobe)
+  console.log(dbWardrobe)
+}
   useEffect(() => {
-  login()
-    .then(user => {
-      setWardobe(user.wardrobe)
-    })
-    .catch(error => {
-      console.error('Error:', error)
-    })
+ 
+
   }, [])
   
 

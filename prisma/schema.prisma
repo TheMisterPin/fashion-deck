@@ -7,6 +7,94 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Outfit {
+  id          Int          @id @default(autoincrement())
+  picture     String?
+  timesWorn   Int          @default(0)
+  isUsed      Boolean      @default(false)
+  isAvailable Boolean      @default(true)
+  isWorn      Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  userId      String?
+  preview     String[]
+  lastWorn    DateTime?
+  User        User?        @relation(fields: [userId], references: [clerkId])
+  items       OutfitItem[]
+}
+
+model OutfitItem {
+  outfitId       Int
+  clothingItemId Int
+  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
+  outfit         Outfit       @relation(fields: [outfitId], references: [id])
+
+  @@id([outfitId, clothingItemId])
+  @@index([clothingItemId])
+}
+
+model ClothingItem {
+  id          Int            @id @default(autoincrement())
+  type        ClothingType
+  name        String?
+  color       Color?
+  picture     String?
+  timesWorn   Int            @default(0)
+  lastWorn    DateTime?
+  isFavorite  Boolean        @default(false)
+  isAvailable Boolean        @default(true)
+  isDeleted   Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  favorites   FavoriteItem[] @relation("ClothingItemToFavoriteItem")
+  outfits     OutfitItem[]
+  wardrobes   WardrobeItem[] @relation("ClothingItemToWardrobeItem")
+  wornWith    WornWithItem[] @relation("ItemWornWith")
+  wornBy      WornWithItem[] @relation("WornWithItem")
+
+  @@index([isAvailable])
+  @@index([isFavorite])
+  @@index([color])
+}
+
+model WornWithItem {
+  itemId            Int
+  wornWithItemId    Int
+  timesWornTogether Int          @default(1)
+  item              ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id])
+  wornWithItem      ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id])
+
+  @@id([itemId, wornWithItemId])
+}
+
+model User {
+  id        Int            @id @default(autoincrement())
+  clerkId   String         @unique
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  favorites FavoriteItem[]
+  outfits   Outfit[]
+  wardrobe  WardrobeItem[]
+}
+
+model WardrobeItem {
+  userId         String
+  clothingItemId Int
+  clothingItem   ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id])
+  user           User         @relation(fields: [userId], references: [clerkId])
+
+  @@id([userId, clothingItemId])
+}
+
+model FavoriteItem {
+  userId         String
+  clothingItemId Int
+  clothingItem   ClothingItem @relation("ClothingItemToFavoriteItem", fields: [clothingItemId], references: [id])
+  user           User         @relation(fields: [userId], references: [clerkId])
+
+  @@id([userId, clothingItemId])
+}
+
 enum ClothingType {
   SHIRT
   PANT
@@ -18,112 +106,16 @@ enum ClothingType {
 enum Color {
   RED
   BLUE
-  BROWN
-  BEIGE
   GREEN
   BLACK
   WHITE
   YELLOW
+  BROWN
+  BEIGE
 }
 
 enum Style {
   CASUAL
   WORK
   FORMAL
-}
-
-model Outfit {
-  id          Int      @id @default(autoincrement())
-
-  picture     String?
-  preview     String[]
-  timesWorn   Int      @default(0)
-  lastWorn    DateTime?
-  isUsed      Boolean  @default(false)
-  isAvailable Boolean  @default(true)
-  isWorn      Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  items  OutfitItem[]
-  User   User?        @relation(fields: [userId], references: [clerkId])
-  userId String?
-}
-
-model OutfitItem {
-  outfitId       Int
-  clothingItemId Int
-
-  outfit       Outfit       @relation(fields: [outfitId], references: [id])
-  clothingItem ClothingItem @relation(fields: [clothingItemId], references: [id])
-
-  @@id([outfitId, clothingItemId])
-  @@index([clothingItemId])
-}
-
-model ClothingItem {
-  id          Int          @id @default(autoincrement())
-  type        ClothingType
-  name        String?
-  color       Color?
-  picture     String?
-  timesWorn   Int          @default(0)
-  lastWorn    DateTime?
-  isFavorite  Boolean      @default(false)
-  isAvailable Boolean      @default(true)
-  isDeleted   Boolean      @default(false)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  outfits   OutfitItem[]
-  wardrobes WardrobeItem[] @relation("ClothingItemToWardrobeItem")
-  favorites FavoriteItem[] @relation("ClothingItemToFavoriteItem")
-
-  wornWith WornWithItem[] @relation("ItemWornWith")
-  wornBy   WornWithItem[] @relation("WornWithItem")
-
-  @@index([isAvailable])
-  @@index([isFavorite])
-  @@index([color])
-}
-
-model WornWithItem {
-  itemId           Int
-  wornWithItemId   Int
-  timesWornTogether Int    @default(1)
-
-  item         ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id])
-  wornWithItem ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id])
-
-  @@id([itemId, wornWithItemId])
-}
-
-model User {
-  id        Int            @id @default(autoincrement())
-  clerkId   String         @unique
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  outfits   Outfit[]
-  wardrobe  WardrobeItem[]
-  favorites FavoriteItem[]
-}
-
-model WardrobeItem {
-  userId         String
-  clothingItemId Int
-
-  user         User         @relation(fields: [userId], references: [clerkId])
-  clothingItem ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id])
-
-  @@id([userId, clothingItemId])
-}
-
-model FavoriteItem {
-  userId         String
-  clothingItemId Int
-
-  user         User         @relation(fields: [userId], references: [clerkId])
-  clothingItem ClothingItem @relation("ClothingItemToFavoriteItem", fields: [clothingItemId], references: [id])
-
-  @@id([userId, clothingItemId])
 }

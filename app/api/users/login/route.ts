@@ -21,7 +21,7 @@ export async function POST(){
             clerkId: userId
         },
         include: {
-            wardrobe: true,
+            wardrobe: {include :{clothingItem : true}}, 
             favorites : true,
             outfits : true
         }

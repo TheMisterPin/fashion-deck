@@ -13,6 +13,7 @@ type OutfitFormProps = {
 export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
   const [wardrobeItems, setWardrobeItems] = useState<ClothingItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<ClothingItem[]>([]);
+  // const [outfits, setOutfits] = useState<Outfit[]>([])
   const [loading, setLoading] = useState(false);
 
   // Fetch wardrobe items
