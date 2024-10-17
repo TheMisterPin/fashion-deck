@@ -17,8 +17,9 @@ async function createWardrobeItem(userId: string, clothingItemId: number) {
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
   const data = await req.json(); 
-  const { type, picture, color, name } = data;
-
+  const { type, picture, color } = data;
+const name = [color, type]
+const newName= name.join(" ")
   if (!userId) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
         type: type.toUpperCase(), 
         picture,
         color: color.toUpperCase(), 
-        name,
+        name : newName.toLowerCase(),
       },
     });
 

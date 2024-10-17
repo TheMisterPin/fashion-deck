@@ -1,0 +1,134 @@
+[
+	{
+		
+		"type": "SHOES",
+		"color": "BROWN",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346469/wardrobe-manager/brownShoes_senza_sfondo_vcuf89.png"
+	},
+	{
+		
+		"type": "SHIRT",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346468/wardrobe-manager/stripedBlueshitr_senza_sfondo_zjpyl8.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "BROWN",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346468/wardrobe-manager/brownJumper4_senza_sfondo_beae3e.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "GREEN",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346467/wardrobe-manager/greenJumper_senza_sfondo_f7pwzl.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "BROWN",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346466/wardrobe-manager/brownJumper3_senza_sfondo_hzl5so.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "GREY",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346466/wardrobe-manager/greyJumper2_senza_sfondo_s5nbo3.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "GREY",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346465/wardrobe-manager/greyjumper3_senza_sfondo_hkjsn7.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346464/wardrobe-manager/blueJumper4_senza_sfondo_debjk8.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346463/wardrobe-manager/blueJumper3_senza_sfondo_ijjmef.png"
+	},
+	{
+		
+		"type": "JUMPER",
+		"color": "BROWN",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346462/wardrobe-manager/brownJumper_senza_sfondo_n2xtp9.png"
+	},
+	{
+		
+		"type": "PANTS",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346462/wardrobe-manager/jeans2_senza_sfondo_gvrywy.png"
+	},
+	{
+		
+		"type": "PANTS",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346461/wardrobe-manager/jeans_senza_sfondo_acbk2d.png"
+	},
+	{
+		
+		"type": "PANTS",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346460/wardrobe-manager/bluePants_senza_sfondo_xxadgr.png"
+	},
+	{
+		
+		"type": "PANTS",
+		"color": "GREY",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346459/wardrobe-manager/greyPants_senza_sfondo_m6azzb.png"
+	},
+	{
+		
+		"type": "PANTS",
+		"color": "BEIGE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346459/wardrobe-manager/beigePants_senza_sfondo_pt0xuf.png"
+	},
+	{
+		
+		"type": "SHIRT",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346458/wardrobe-manager/stripedblueshirt_senza_sfondo_w80vd0.png"
+	},
+	{
+		
+		"type": "SHIRT",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346458/wardrobe-manager/blueShirt2_senza_sfondo_p3mf9k.png"
+	},
+	{
+		
+		"type": "SHIRT",
+		"color": "WHITE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346456/wardrobe-manager/whiteShirt_senza_sfondo_tgrije.png"
+	},
+	{
+		
+		"type": "SHIRT",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346456/wardrobe-manager/blueShirt_senza_sfondo_wkomfu.png"
+	},
+	{
+		
+		"type": "SHIRT",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346456/wardrobe-manager/denimShirt_senza_sfondo_aui1mx.png"
+	},
+	{
+		
+		"type": "SHOES",
+		"color": "BLUE",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346455/wardrobe-manager/blueShoes_senza_sfondo_umu6co.png"
+	},
+	{
+		
+		"type": "SHOES",
+		"color": "GREY",
+		"picture": "https://res.cloudinary.com/dl1fw2gx2/image/upload/v1728346454/wardrobe-manager/greyShoes_senza_sfondo_kmndt8.png"
+	}
+]

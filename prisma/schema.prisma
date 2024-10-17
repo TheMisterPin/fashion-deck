@@ -36,7 +36,7 @@ model OutfitItem {
 model ClothingItem {
   id          Int            @id @default(autoincrement())
   type        ClothingType
-  name        String?
+  name        String
   color       Color?
   picture     String?
   timesWorn   Int            @default(0)
@@ -97,10 +97,11 @@ model FavoriteItem {
 
 enum ClothingType {
   SHIRT
-  PANT
+  PANTS
   JACKET
+  HOODIE
   JUMPER
-  SHOE
+  SHOES
 }
 
 enum Color {
@@ -108,14 +109,16 @@ enum Color {
   BLUE
   GREEN
   BLACK
+  GREY
+  PINK
   WHITE
   YELLOW
   BROWN
   BEIGE
+  
 }
 
 enum Style {
   CASUAL
-  WORK
   FORMAL
 }
