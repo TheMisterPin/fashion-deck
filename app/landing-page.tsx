@@ -27,7 +27,7 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-8">
                               
-                <SignInButton mode="modal">
+                <SignInButton mode="modal" >
                   <Button className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white transition-colors duration-200 rounded-md bg-stone-800 hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500">
                     Get Started
                     <ArrowRight className="w-5 h-5 ml-2" />

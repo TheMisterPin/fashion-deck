@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
 					outfitParts.slice(i + 1).map(wornWithItemId => [
 						prisma.wornWithItem.upsert({
 							where: { itemId_wornWithItemId: { itemId, wornWithItemId } },
-							update: {}, // No update needed
+							update: {}, 
 							create: { itemId, wornWithItemId, timesWornTogether: 0 }
 						}),
 						prisma.wornWithItem.upsert({
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
 									wornWithItemId: itemId
 								}
 							},
-							update: {}, // No update needed
+							update: {}, 
 							create: {
 								itemId: wornWithItemId,
 								wornWithItemId: itemId,
