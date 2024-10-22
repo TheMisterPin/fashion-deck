@@ -1,4 +1,5 @@
 // components/AddOutfitModal.tsx
+// components/AddOutfitModal.tsx
 
 import React, { useEffect, useState } from 'react'
 import Modal from '@/components/ui/modal'

@@ -17,7 +17,7 @@ async function createWardrobeItem(userId: string, clothingItemId: number) {
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
   const data = await req.json(); 
-  const { type, picture, color } = data;
+  const { type, image, color } = data;
 const name = [color, type]
 const newName= name.join(" ")
   if (!userId) {
@@ -29,7 +29,7 @@ const newName= name.join(" ")
     const newItem = await prisma.clothingItem.create({
       data: {
         type: type.toUpperCase(), 
-        picture,
+        picture : image,
         color: color.toUpperCase(), 
         name : newName.toLowerCase(),
       },
