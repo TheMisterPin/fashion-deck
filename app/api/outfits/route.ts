@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
           lastWorn: result.lastWorn,
           isUsed: result.isUsed,
           isWorn: result.isWorn,
-          items: result.items.map((item : OutfitItem) => ({
+          items: result.items.map((item : any) => ({
             id: item.clothingItem.id,
             type: item.clothingItem.type,
             name: item.clothingItem.name,
@@ -147,14 +147,14 @@ export async function GET() {
       },
     })
 
-    const formattedOutfits = outfits.map((outfit : Outfit) => ({
+    const formattedOutfits = outfits.map((outfit : any) => ({
       id: outfit.id,
       picture: outfit.picture,
       occasion: outfit.occasion.toString(),
       preview: outfit.preview,
       timesWorn: outfit.timesWorn,
       lastWorn: outfit.lastWorn,
-      items: outfit.items.map((item) => ({
+      items: outfit.items.map((item : any) => ({
         id: item.clothingItem.id,
         type: item.clothingItem.type,
         name: item.clothingItem.name,

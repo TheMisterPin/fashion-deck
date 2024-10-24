@@ -6,7 +6,6 @@ export async function PUT(req : NextRequest) {
   const updatedItem = await prisma.clothingItem.update({
     where: { id: itemId },
     data: {
-      isWorn: true,
       lastWorn: new Date(),
       timesWorn: { increment: 1 },
     },
