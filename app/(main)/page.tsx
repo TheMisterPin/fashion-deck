@@ -1,9 +1,8 @@
-"use client"
+'use client'
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { Shirt, Layers } from "lucide-react"
-
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Shirt, Layers } from 'lucide-react'
 
 export default function HomePage() {
   return (

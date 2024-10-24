@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import wardrobeData from '@/data/wardrobe.json'
 
-const prisma = new PrismaClient()
+import prisma from '@/lib/prisma';
 
 // Function to create wardrobe item for the user
 async function createWardrobeItem(userId: string, clothingItemId: number) {
@@ -30,8 +29,8 @@ async function main() {
 					type: type.toUpperCase() as ClothingType,
 					color: color.toUpperCase() as Color,
 					picture,
-					name: name
-				}
+					name: name,
+        }
 			})
 
 			// Associate the clothing item with the user's wardrobe
@@ -47,7 +46,7 @@ async function main() {
 	}
 }
 
-main().catch(error => {
+main().catch((error) => {
 	console.error(error)
 	process.exit(1)
-})
+});

@@ -1,18 +1,21 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import Image from 'next/image'
-
-
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from '@/components/ui/dialog'
 
 type ClothingItemSelectorProps = {
   items: ResponseClothingItem[]
   onSelect: (item: ResponseClothingItem) => void
   onClose: () => void
-}
+};
 
 export default function ClothingItemSelector({ items, onSelect, onClose }: ClothingItemSelectorProps) {
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog
+      open
+      onOpenChange={onClose}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Select an Item</DialogTitle>
@@ -25,13 +28,15 @@ export default function ClothingItemSelector({ items, onSelect, onClose }: Cloth
               onClick={() => onSelect(item)}
             >
               <Image
-                src={item.picture || ""}
-                alt={item.name || "No Image"}
+                src={item.picture || ''}
+                alt={item.name || 'No Image'}
                 width={150}
                 height={150}
                 className="object-contain"
               />
-              <p className="mt-2 text-center">{item.name}</p>
+              <p className="mt-2 text-center">
+                {item.name}
+              </p>
             </div>
           ))}
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getUserOutfits } from '@/app/controllers/outfits'
+import { getUserOutfits } from '@/controllers/outfits'
 import AddOutfitModal from '@/app/_components/modals/add-outfit-modal'
 import OutfitCard from '@/app/_components/cards/outfit-card'
 import RandomOutfitGenerator from '@/app/_components/misc/random-outfit-generator'
@@ -16,8 +16,8 @@ export default function OutfitPage() {
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
-		fetchWardrobeItems()
 		fetchOutfits()
+		fetchWardrobeItems()
 	}, [])
 
 	const fetchWardrobeItems = async () => {
@@ -42,6 +42,7 @@ export default function OutfitPage() {
 		setIsLoading(true)
 		try {
 			const fetchedOutfits = await getUserOutfits()
+			console.log("outfits : " , fetchedOutfits)
 			setOutfits(fetchedOutfits)
 		} catch (error) {
 			console.error('Error fetching outfits:', error)
@@ -65,7 +66,6 @@ export default function OutfitPage() {
 			setOutfits(prevOutfits => prevOutfits.filter(outfit => outfit.id !== id))
 			toast.success('Outfit deleted successfully')
 		} catch (error) {
-			console.error('Error deleting outfit:', error)
 			toast.error('Failed to delete outfit')
 		}
 	}
@@ -107,7 +107,6 @@ export default function OutfitPage() {
 							key={outfit.id}
 							outfit={outfit}
 							onEdit={() => handleEdit(outfit.id)}
-							onDelete={() => handleDelete(outfit.id)}
 						/>
 					))}
 				</div>

@@ -1,4 +1,3 @@
-'use client'
 import { useState, useEffect } from 'react'
 
 function useLocalStorage<T>(key: string, initialValue: T) {
@@ -25,4 +24,4 @@ function useLocalStorage<T>(key: string, initialValue: T) {
   return [storedValue, setStoredValue] as const
 }
 
-export default useLocalStorage
+export default useLocalStorage;
