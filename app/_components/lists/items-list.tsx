@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import ItemCard from '../cards/item-card'
 import { motion } from 'framer-motion'
+import ItemCard from '../cards/item-card'
 import ItemDetails from '../modals/item-details'
 
 type ItemListProps = {
   items: ClothingItem[]
-}
+};
 
 const ITEMS_PER_PAGE = 5
 
@@ -24,8 +24,8 @@ export default function ItemList({ items }: ItemListProps) {
 
   const handleScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
+      window.innerHeight + document.documentElement.scrollTop
+      === document.documentElement.offsetHeight
     ) {
       loadMore()
     }
@@ -47,7 +47,7 @@ export default function ItemList({ items }: ItemListProps) {
   if (items.length === 0) return <p>No items found.</p>
 
   return (
-    <>
+    <React.Fragment>
       <motion.div className="grid w-full max-w-2xl grid-cols-1 gap-4 mt-8">
         {visibleItems.map((item, index) => (
           <motion.div
@@ -56,7 +56,10 @@ export default function ItemList({ items }: ItemListProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            <ItemCard item={item} onOpenDetails={handleOpenDetails} />
+            <ItemCard
+              item={item}
+              onOpenDetails={handleOpenDetails}
+            />
           </motion.div>
         ))}
       </motion.div>
@@ -65,6 +68,6 @@ export default function ItemList({ items }: ItemListProps) {
         onClose={handleCloseDetails}
         itemId={selectedItemId}
       />
-    </>
+    </React.Fragment>
   )
 }

@@ -10,6 +10,7 @@ datasource db {
 model Outfit {
   id          Int          @id @default(autoincrement())
   picture     String?
+  occasion    Occasion     @default(CASUAL)
   timesWorn   Int          @default(0)
   isUsed      Boolean      @default(false)
   isAvailable Boolean      @default(true)
@@ -21,13 +22,15 @@ model Outfit {
   lastWorn    DateTime?
   User        User?        @relation(fields: [userId], references: [clerkId])
   items       OutfitItem[]
+
+  @@index([occasion])
 }
 
 model OutfitItem {
   outfitId       Int
   clothingItemId Int
   clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
-  outfit         Outfit       @relation(fields: [outfitId], references: [id])
+  outfit         Outfit       @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
   @@id([outfitId, clothingItemId])
   @@index([clothingItemId])
@@ -115,10 +118,11 @@ enum Color {
   YELLOW
   BROWN
   BEIGE
-  
 }
 
-enum Style {
+enum Occasion {
   CASUAL
   FORMAL
+  SPORT
+  WORK
 }
