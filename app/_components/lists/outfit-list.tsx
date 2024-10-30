@@ -2,10 +2,6 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
-import { Pencil, Trash2, X } from 'lucide-react'
-import axios from 'axios'
-
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,6 +10,9 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { Card, CardContent } from '@/components/ui/card'
+import Image from 'next/image'
+import { Pencil, Trash2, X } from 'lucide-react'
+import axios from 'axios'
 
 interface OutfitCardProps {
   outfit: Outfit
@@ -33,28 +32,28 @@ function OutfitCard({
   return (
     <>
       <Card
-        className="overflow-hidden transition-shadow cursor-pointer hover:shadow-lg"
+        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
         onClick={() => setIsDialogOpen(true)}
       >
         <div className="flex h-full">
-          <div className="relative w-1/2 h-full">
+          <div className="w-1/2 h-full relative">
             {outfit.picture ? (
               <Image
                 src={outfit.picture}
                 alt={`Outfit ${outfit.id}`}
                 width={150}
                 height={150}
-                className="object-cover rounded-md"
+                className="rounded-md object-cover"
               />
             ) : (
-              <div className="flex items-center justify-center w-full h-full bg-gray-200">
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                 <span className="text-gray-400">No Image</span>
               </div>
             )}
           </div>
-          <CardContent className="flex flex-col justify-between w-1/2 p-4">
+          <CardContent className="w-1/2 flex flex-col justify-between p-4">
             <div>
-              <h3 className="mb-2 text-lg font-semibold">Outfit {outfit.id}</h3>
+              <h3 className="font-semibold text-lg mb-2">Outfit {outfit.id}</h3>
               <p className="text-sm text-muted-foreground">
                 Occasion: {outfit.occasion}
               </p>
@@ -76,7 +75,7 @@ function OutfitCard({
               size="icon"
               onClick={() => setIsDialogOpen(false)}
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </Button>
           </DialogHeader>
@@ -88,7 +87,7 @@ function OutfitCard({
                   alt={`Outfit ${outfit.id}`}
                   width={150}
                   height={150}
-                  className="object-cover rounded-md"
+                  className="rounded-md object-cover"
                 />
               ) : (
                 <div className="w-[150px] h-[150px] bg-gray-200 flex items-center justify-center rounded-md">
@@ -118,8 +117,8 @@ function OutfitCard({
             </div>
           </div>
           <div className="mt-4">
-            <h4 className="mb-2 font-semibold">Items</h4>
-            <div className="flex pb-2 space-x-2 overflow-x-auto">
+            <h4 className="font-semibold mb-2">Items</h4>
+            <div className="flex overflow-x-auto space-x-2 pb-2">
               {outfit.preview.map((item, index) => (
                 <div key={index} className="flex-shrink-0">
                   {item ? (
@@ -128,11 +127,11 @@ function OutfitCard({
                       alt={`Item ${index + 1}`}
                       width={80}
                       height={80}
-                      className="object-cover rounded-md"
+                      className="rounded-md object-cover"
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-20 h-20 bg-gray-200 rounded-md">
-                      <span className="text-xs text-gray-400">No Image</span>
+                    <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-md">
+                      <span className="text-gray-400 text-xs">No Image</span>
                     </div>
                   )}
                 </div>
@@ -140,9 +139,9 @@ function OutfitCard({
             </div>
           </div>
           <div className="mt-4">
-            <h4 className="mb-2 font-semibold">Similar Outfits</h4>
-            <div className="flex pb-2 space-x-2 overflow-x-auto">
-              {similarOutfits.map((similarOutfit) => (
+            <h4 className="font-semibold mb-2">Similar Outfits</h4>
+            <div className="flex overflow-x-auto space-x-2 pb-2">
+              {similarOutfits.map(similarOutfit => (
                 <div key={similarOutfit.id} className="flex-shrink-0">
                   {similarOutfit.picture ? (
                     <Image
@@ -150,14 +149,14 @@ function OutfitCard({
                       alt={`Similar Outfit ${similarOutfit.id}`}
                       width={80}
                       height={80}
-                      className="object-cover rounded-md"
+                      className="rounded-md object-cover"
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-20 h-20 bg-gray-200 rounded-md">
-                      <span className="text-xs text-gray-400">No Image</span>
+                    <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-md">
+                      <span className="text-gray-400 text-xs">No Image</span>
                     </div>
                   )}
-                  <p className="mt-1 text-xs">Outfit {similarOutfit.id}</p>
+                  <p className="text-xs mt-1">Outfit {similarOutfit.id}</p>
                 </div>
               ))}
             </div>
@@ -187,31 +186,29 @@ function OutfitCard({
 }
 
 export default function OutfitTab({ outfits }: { outfits: Outfit[] }) {
-  const [selectedCategory, setSelectedCategory] = useState('Casual')
-  const [selectedOutfits, setSelectedOutfits] = useState<Outfit[]>(
-    outfits || []
-  )
-  const categories = ['Formal', 'Casual', 'Sport', 'Work']
+  const [selectedCategory, setSelectedCategory] = useState("Casual")
+const [selectedOutfits, setSelectedOutfits] = useState<Outfit[]>(outfits || [])
+  const categories = ["Formal", "Casual", "Sport", "Work"]
 
   const getCategoryOutfits = (category: string): Outfit[] => {
     switch (category) {
-      case 'Formal':
-        return outfits.filter((outfit) => outfit.occasion === 'FORMAL')
-
-      case 'Casual':
-        return outfits.filter((outfit) => outfit.occasion === 'CASUAL')
-      case 'Sport':
-        return outfits.filter((outfit) => outfit.occasion === 'SPORT')
-      case 'Work':
-        return outfits.filter((outfit) => outfit.occasion === 'WORK')
+      case "Formal":
+       return outfits.filter(outfit => outfit.occasion === "FORMAL")
+	   
+      case "Casual":
+        return outfits.filter(outfit => outfit.occasion === "CASUAL")
+      case "Sport":
+        return outfits.filter(outfit => outfit.occasion === "SPORT")
+      case "Work":
+        return outfits.filter(outfit => outfit.occasion === "WORK")
       default:
         return outfits
     }
   }
 
-  function handleClick(category: string) {
-    setSelectedCategory(category)
-    setSelectedOutfits(getCategoryOutfits(category))
+  function handleClick (category : string){
+	setSelectedCategory(category)
+	setSelectedOutfits(getCategoryOutfits(category))
   }
 
   const handleEdit = (id: number) => {
@@ -221,6 +218,7 @@ export default function OutfitTab({ outfits }: { outfits: Outfit[] }) {
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`/api/outfits/${id}`)
+
     } catch (error) {
       console.error('Error deleting outfit:', error)
     }
@@ -228,32 +226,51 @@ export default function OutfitTab({ outfits }: { outfits: Outfit[] }) {
 
   const getSimilarOutfits = (outfit: Outfit): Outfit[] => {
     return outfits
-      .filter((o) => o.occasion === outfit.occasion && o.id !== outfit.id)
+      .filter(o => o.occasion === outfit.occasion && o.id !== outfit.id)
       .slice(0, 3)
   }
 
   return (
-    <>
-      <motion.div className="grid w-full max-w-2xl grid-cols-1 gap-4 mt-8">
-        {visibleOutfits.map((outfit, index) => (
-          <motion.div
-            key={outfit.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+    <div className="container mx-auto p-4">
+      <nav className="flex justify-center space-x-4 mb-8">
+        {categories.map((category) => (
+          <Button
+            key={category}
+            onClick={() => handleClick(category)}
+            variant={selectedCategory === category ? "default" : "outline"}
           >
-            <OutfitCard
-              outfit={outfit}
-              onEdit={function (): void {
-                console.log('edit')
-              }}
-              onDelete={function (id: number): void {
-                console.log('delete')
-              }}
-            />
-          </motion.div>
+            {category}
+          </Button>
         ))}
-      </motion.div>
-    </>
+      </nav>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={selectedCategory}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          {selectedOutfits.map((outfit) => (
+            <motion.div
+              key={outfit.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+            >
+              <OutfitCard
+                outfit={outfit}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                similarOutfits={getSimilarOutfits(outfit)}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   )
 }

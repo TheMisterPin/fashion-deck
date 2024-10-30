@@ -184,10 +184,7 @@ export async function POST(
   const itemId = parseInt(id, 10)
 
   if (isNaN(itemId)) {
-    return NextResponse.json(
-      { message: 'Invalid Clothing Item ID' },
-      { status: 400 }
-    )
+    return NextResponse.json({ message: 'Invalid Clothing Item ID' }, { status: 400 })
   }
 
   try {
@@ -219,7 +216,7 @@ export async function POST(
     })
 
     let isFavorite: boolean
-
+    
     if (existingFavorite) {
       // Remove from favorites
       await prisma.favoriteItem.delete({
@@ -253,10 +250,10 @@ export async function POST(
     })
 
     return NextResponse.json(
-      {
+      { 
         message: `Item ${isFavorite ? 'added to' : 'removed from'} favorites successfully`,
         item: updatedItem,
-        isFavorite
+        isFavorite 
       },
       { status: 200 }
     )

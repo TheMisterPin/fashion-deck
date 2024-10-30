@@ -13,7 +13,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { Card, CardContent } from '@/components/ui/card'
-import { deleteClothingItem } from '@/app/controllers/clothing'
+import { deleteClothingItem } from '@/controllers/clothing'
 import { useWardrobeContext } from '@/context/wardrobe-context'
 
 interface ItemCardProps {

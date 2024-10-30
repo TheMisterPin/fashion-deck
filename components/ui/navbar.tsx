@@ -1,12 +1,6 @@
-import { Home, Search, PlusCircle, Bell, User } from 'lucide-react'
+import { Home, Search, PlusCircle, Bell, User } from "lucide-react"
 
-function NavButton({
-  icon,
-  large = false
-}: {
-  icon: React.ReactNode
-  large?: boolean
-}) {
+function NavButton({ icon, large = false }: { icon: React.ReactNode; large?: boolean }) {
   return (
     <button
       className={`flex items-center justify-center rounded-full ${
@@ -33,3 +27,4 @@ export default function Navbar() {
     </nav>
   )
 }
+

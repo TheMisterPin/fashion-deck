@@ -92,7 +92,7 @@ model WardrobeItem {
 model FavoriteItem {
   userId         String
   clothingItemId Int
-  clothingItem   ClothingItem @relation("ClothingItemToFavoriteItem", fields: [clothingItemId], references: [id], onDelete: Cascade)
+  clothingItem   ClothingItem @relation("ClothingItemToFavoriteItem", fields: [clothingItemId], references: [id])
   user           User         @relation(fields: [userId], references: [clerkId])
 
   @@id([userId, clothingItemId])
