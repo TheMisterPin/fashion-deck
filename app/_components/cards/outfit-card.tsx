@@ -26,7 +26,10 @@ export default function OutfitCard({ outfit, onEdit }: OutfitCardProps) {
   return (
     <Card className="w-[300px]">
       <CardHeader>
-        <CardTitle>My Outfit {outfit.id}</CardTitle>
+        <CardTitle>
+          My Outfit
+          {outfit.id}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-center">

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { auth } from '@clerk/nextjs/server'
 
-const prisma = new PrismaClient()
+import prisma from '@/lib/prisma'
 
 export async function PUT(req: NextRequest) {
   const itemId = parseInt(req.nextUrl.searchParams.get('id')!)
@@ -42,17 +41,16 @@ export async function PUT(req: NextRequest) {
       })
 
       return NextResponse.json({ message: 'Item removed from favorites' })
-    } else {
-      // If it does not exist, add to favorites
-      await prisma.favoriteItem.create({
-        data: {
-          userId: userId!,
-          clothingItemId: itemId
-        }
-      })
-
-      return NextResponse.json({ message: 'Item added to favorites' })
     }
+    // If it does not exist, add to favorites
+    await prisma.favoriteItem.create({
+      data: {
+        userId: userId!,
+        clothingItemId: itemId
+      }
+    })
+
+    return NextResponse.json({ message: 'Item added to favorites' })
   }
 
   // Run the toggle favorite function and handle errors

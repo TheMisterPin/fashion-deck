@@ -30,6 +30,13 @@ enum Occasion {
   SPORT = 'SPORT'
 }
 
+enum Occasion {
+  CASUAL = 'CASUAL',
+  WORK = 'WORK',
+  FORMAL = 'FORMAL',
+  SPORT = 'SPORT'
+}
+
 type OutfitFormProps = {
   onSubmitSuccess: () => void
 }
@@ -190,28 +197,28 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
           selected={!!getSelectedItem('JUMPER')}
         />
       </div>
-      {activeSelector === 'Shirt' && shirts && (
+      {activeSelector === 'Shirt' && (
         <ClothingItemSelector
           items={shirts}
           onSelect={handleSelect}
           onClose={() => setActiveSelector(null)}
         />
       )}
-      {activeSelector === 'Pants' && pants && (
+      {activeSelector === 'Pants' && (
         <ClothingItemSelector
           items={pants}
           onSelect={handleSelect}
           onClose={() => setActiveSelector(null)}
         />
       )}
-      {activeSelector === 'Shoes' && shoes && (
+      {activeSelector === 'Shoes' && (
         <ClothingItemSelector
           items={shoes}
           onSelect={handleSelect}
           onClose={() => setActiveSelector(null)}
         />
       )}
-      {activeSelector === 'Jumper' && jumpers && (
+      {activeSelector === 'Jumper' && (
         <ClothingItemSelector
           items={jumpers}
           onSelect={handleSelect}
@@ -238,25 +245,6 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
               </div>
             ))}
         </div>
-      </div>
-
-      <div className="mt-4">
-        <Label htmlFor="occasion">Select Occasion:</Label>
-        <Select
-          value={occasion}
-          onValueChange={(value) => setOccasion(value as Occasion)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select an occasion" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.values(Occasion).map((value) => (
-              <SelectItem key={value} value={value}>
-                {value.charAt(0) + value.slice(1).toLowerCase()}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       <Button

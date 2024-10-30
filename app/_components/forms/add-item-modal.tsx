@@ -76,29 +76,6 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
     }
   }
 
-  const uploadToImgbb = async (imageBlob: Blob): Promise<string> => {
-    if (!imageBlob) throw new Error('No Image')
-
-    const formData = new FormData()
-    const processedFile = new File([imageBlob], 'processed_image.png', {
-      type: 'image/png'
-    })
-
-    formData.append('image', processedFile)
-
-    const response = await axios.post(
-      `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
-      formData
-    )
-
-    // Properly check the response and extract the URL
-    if (!response.data?.data?.url) {
-      throw new Error('Failed to get image URL from ImgBB')
-    }
-
-    return response.data.data.url // Return the URL directly
-  }
-
   const removeBackground = async (file: File): Promise<Blob> => {
     const formData = new FormData()
 
@@ -162,7 +139,7 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="SHIRT">Shirt</SelectItem>
-                        <SelectItem value="PANTS">Pants</SelectItem>
+                        <SelectItem value="PANT">Pants</SelectItem>
                         <SelectItem value="JACKET">Jacket</SelectItem>
                         <SelectItem value="JUMPER">Jumper</SelectItem>
                         <SelectItem value="SHOE">Shoes</SelectItem>

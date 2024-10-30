@@ -47,7 +47,7 @@ export default function ProgressiveLoader({ status }: { status: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-background">
       <AnimatePresence>
         {isVisible && (
           <motion.div
@@ -81,11 +81,11 @@ export default function ProgressiveLoader({ status }: { status: string }) {
                           className="flex items-center gap-3 text-lg"
                         >
                           {steps.indexOf(step) < steps.indexOf(status) ? (
-                            <CheckCircle2 className="text-primary h-5 w-5" />
+                            <CheckCircle2 className="w-5 h-5 text-primary" />
                           ) : step === status ? (
-                            <Loader2 className="animate-spin text-primary h-5 w-5" />
+                            <Loader2 className="w-5 h-5 animate-spin text-primary" />
                           ) : (
-                            <Circle className="text-muted-foreground h-5 w-5" />
+                            <Circle className="w-5 h-5 text-muted-foreground" />
                           )}
                           <span
                             className={cn(
@@ -109,7 +109,7 @@ export default function ProgressiveLoader({ status }: { status: string }) {
                     >
                       <iframe
                         src="https://lottie.host/embed/4179f226-b920-455f-af17-b315578ea617/VMMbauLpUp.json"
-                        className="w-full h-64 rounded-md border border-input"
+                        className="w-full h-64 border rounded-md border-input"
                         title="Loaded Content"
                       />
                     </motion.div>

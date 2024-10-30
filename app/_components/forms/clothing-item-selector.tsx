@@ -20,7 +20,7 @@ export default function ClothingItemSelector({
   onClose
 }: ClothingItemSelectorProps) {
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Select an Item</DialogTitle>

@@ -21,7 +21,10 @@ export default function ItemDetails({ isOpen, onClose, itemId }: Props) {
           <DialogTitle>Item Details</DialogTitle>
         </DialogHeader>
         <div className="mt-4">
-          <p>This is the modal for the component with ID: {itemId}</p>
+          <p>
+            This is the modal for the component with ID:
+            {itemId}
+          </p>
           {/* Add more details here when you have the actual item data */}
         </div>
       </DialogContent>

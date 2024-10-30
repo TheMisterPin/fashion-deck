@@ -33,28 +33,28 @@ function OutfitCard({
   return (
     <>
       <Card
-        className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+        className="overflow-hidden transition-shadow cursor-pointer hover:shadow-lg"
         onClick={() => setIsDialogOpen(true)}
       >
         <div className="flex h-full">
-          <div className="w-1/2 h-full relative">
+          <div className="relative w-1/2 h-full">
             {outfit.picture ? (
               <Image
                 src={outfit.picture}
                 alt={`Outfit ${outfit.id}`}
                 width={150}
                 height={150}
-                className="rounded-md object-cover"
+                className="object-cover rounded-md"
               />
             ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <div className="flex items-center justify-center w-full h-full bg-gray-200">
                 <span className="text-gray-400">No Image</span>
               </div>
             )}
           </div>
-          <CardContent className="w-1/2 flex flex-col justify-between p-4">
+          <CardContent className="flex flex-col justify-between w-1/2 p-4">
             <div>
-              <h3 className="font-semibold text-lg mb-2">Outfit {outfit.id}</h3>
+              <h3 className="mb-2 text-lg font-semibold">Outfit {outfit.id}</h3>
               <p className="text-sm text-muted-foreground">
                 Occasion: {outfit.occasion}
               </p>
@@ -76,7 +76,7 @@ function OutfitCard({
               size="icon"
               onClick={() => setIsDialogOpen(false)}
             >
-              <X className="h-4 w-4" />
+              <X className="w-4 h-4" />
               <span className="sr-only">Close</span>
             </Button>
           </DialogHeader>
@@ -88,7 +88,7 @@ function OutfitCard({
                   alt={`Outfit ${outfit.id}`}
                   width={150}
                   height={150}
-                  className="rounded-md object-cover"
+                  className="object-cover rounded-md"
                 />
               ) : (
                 <div className="w-[150px] h-[150px] bg-gray-200 flex items-center justify-center rounded-md">
@@ -118,8 +118,8 @@ function OutfitCard({
             </div>
           </div>
           <div className="mt-4">
-            <h4 className="font-semibold mb-2">Items</h4>
-            <div className="flex overflow-x-auto space-x-2 pb-2">
+            <h4 className="mb-2 font-semibold">Items</h4>
+            <div className="flex pb-2 space-x-2 overflow-x-auto">
               {outfit.preview.map((item, index) => (
                 <div key={index} className="flex-shrink-0">
                   {item ? (
@@ -128,11 +128,11 @@ function OutfitCard({
                       alt={`Item ${index + 1}`}
                       width={80}
                       height={80}
-                      className="rounded-md object-cover"
+                      className="object-cover rounded-md"
                     />
                   ) : (
-                    <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-md">
-                      <span className="text-gray-400 text-xs">No Image</span>
+                    <div className="flex items-center justify-center w-20 h-20 bg-gray-200 rounded-md">
+                      <span className="text-xs text-gray-400">No Image</span>
                     </div>
                   )}
                 </div>
@@ -140,8 +140,8 @@ function OutfitCard({
             </div>
           </div>
           <div className="mt-4">
-            <h4 className="font-semibold mb-2">Similar Outfits</h4>
-            <div className="flex overflow-x-auto space-x-2 pb-2">
+            <h4 className="mb-2 font-semibold">Similar Outfits</h4>
+            <div className="flex pb-2 space-x-2 overflow-x-auto">
               {similarOutfits.map((similarOutfit) => (
                 <div key={similarOutfit.id} className="flex-shrink-0">
                   {similarOutfit.picture ? (
@@ -150,14 +150,14 @@ function OutfitCard({
                       alt={`Similar Outfit ${similarOutfit.id}`}
                       width={80}
                       height={80}
-                      className="rounded-md object-cover"
+                      className="object-cover rounded-md"
                     />
                   ) : (
-                    <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-md">
-                      <span className="text-gray-400 text-xs">No Image</span>
+                    <div className="flex items-center justify-center w-20 h-20 bg-gray-200 rounded-md">
+                      <span className="text-xs text-gray-400">No Image</span>
                     </div>
                   )}
-                  <p className="text-xs mt-1">Outfit {similarOutfit.id}</p>
+                  <p className="mt-1 text-xs">Outfit {similarOutfit.id}</p>
                 </div>
               ))}
             </div>
@@ -233,46 +233,27 @@ export default function OutfitTab({ outfits }: { outfits: Outfit[] }) {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <nav className="flex justify-center space-x-4 mb-8">
-        {categories.map((category) => (
-          <Button
-            key={category}
-            onClick={() => handleClick(category)}
-            variant={selectedCategory === category ? 'default' : 'outline'}
+    <>
+      <motion.div className="grid w-full max-w-2xl grid-cols-1 gap-4 mt-8">
+        {visibleOutfits.map((outfit, index) => (
+          <motion.div
+            key={outfit.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            {category}
-          </Button>
+            <OutfitCard
+              outfit={outfit}
+              onEdit={function (): void {
+                console.log('edit')
+              }}
+              onDelete={function (id: number): void {
+                console.log('delete')
+              }}
+            />
+          </motion.div>
         ))}
-      </nav>
-
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={selectedCategory}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-        >
-          {selectedOutfits.map((outfit) => (
-            <motion.div
-              key={outfit.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
-            >
-              <OutfitCard
-                outfit={outfit}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                similarOutfits={getSimilarOutfits(outfit)}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
-      </AnimatePresence>
-    </div>
+      </motion.div>
+    </>
   )
 }

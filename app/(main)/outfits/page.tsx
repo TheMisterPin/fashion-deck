@@ -17,41 +17,39 @@ export default function OutfitPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-b from-stone-50 to-stone-100">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="p-8"
-      >
-        <h1 className="mb-4 text-4xl font-bold text-center text-stone-800">
-          Your Outfits
-        </h1>
-        <div className="flex justify-center mb-4 space-x-2">
-          <AddOutfitModal />
-          {wardrobeItems && (
+    <div className="container p-4 mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-stone-800">Your Outfits</h1>
+        {wardrobeItems ? (
+          <>
+            <AddOutfitModal items={wardrobeItems} />
             <RandomOutfitGenerator
               wardrobeItems={wardrobeItems}
               onOutfitSaved={handleOutfitSaved}
             />
-          )}
-        </div>
-      </motion.div>
-
-      <div className="flex-grow overflow-hidden">
-        {isLoading ? (
-          <Loader />
+          </>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="h-full px-4 pb-8 overflow-y-auto"
-          >
-            {outfits && <OutfitTab outfits={outfits} />}
-          </motion.div>
+          <p className="text-stone-600">No Wardrobe Items</p>
         )}
       </div>
+      {isLoading ? (
+        <TriangleLoader />
+      ) : outfits.length === 0 ? (
+        <p className="text-center text-stone-600">
+          No outfits found. Create your first outfit!
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {outfits.map((outfit) => (
+            <OutfitCard
+              key={outfit.id}
+              outfit={outfit}
+              onEdit={() => handleEdit(outfit.id)}
+              onDelete={() => handleDelete(outfit.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

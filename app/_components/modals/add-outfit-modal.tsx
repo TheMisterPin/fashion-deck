@@ -11,7 +11,6 @@ export default function AddOutfitModal() {
   const handleFormSubmit = () => {
     setIsOpen(false)
   }
-
   return (
     <Modal
       description="Create a new outfit."
