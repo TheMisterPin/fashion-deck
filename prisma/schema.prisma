@@ -10,6 +10,7 @@ datasource db {
 model Outfit {
   id          Int          @id @default(autoincrement())
   picture     String?
+  occasion    Occasion     @default(CASUAL)
   timesWorn   Int          @default(0)
   isUsed      Boolean      @default(false)
   isAvailable Boolean      @default(true)
@@ -21,13 +22,15 @@ model Outfit {
   lastWorn    DateTime?
   User        User?        @relation(fields: [userId], references: [clerkId])
   items       OutfitItem[]
+
+  @@index([occasion])
 }
 
 model OutfitItem {
   outfitId       Int
   clothingItemId Int
-  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
-  outfit         Outfit       @relation(fields: [outfitId], references: [id])
+  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id], onDelete: Cascade)
+  outfit         Outfit       @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
   @@id([outfitId, clothingItemId])
   @@index([clothingItemId])
@@ -61,8 +64,8 @@ model WornWithItem {
   itemId            Int
   wornWithItemId    Int
   timesWornTogether Int          @default(1)
-  item              ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id])
-  wornWithItem      ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id])
+  item              ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id], onDelete: Cascade)
+  wornWithItem      ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id], onDelete: Cascade)
 
   @@id([itemId, wornWithItemId])
 }
@@ -80,7 +83,7 @@ model User {
 model WardrobeItem {
   userId         String
   clothingItemId Int
-  clothingItem   ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id])
+  clothingItem   ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id],onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [clerkId])
 
   @@id([userId, clothingItemId])
@@ -89,7 +92,7 @@ model WardrobeItem {
 model FavoriteItem {
   userId         String
   clothingItemId Int
-  clothingItem   ClothingItem @relation("ClothingItemToFavoriteItem", fields: [clothingItemId], references: [id])
+  clothingItem   ClothingItem @relation("ClothingItemToFavoriteItem", fields: [clothingItemId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [clerkId])
 
   @@id([userId, clothingItemId])
@@ -115,10 +118,11 @@ enum Color {
   YELLOW
   BROWN
   BEIGE
-  
 }
 
-enum Style {
+enum Occasion {
   CASUAL
   FORMAL
+  SPORT
+  WORK
 }

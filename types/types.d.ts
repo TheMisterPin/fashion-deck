@@ -1,168 +1,184 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 // src/types.d.ts
 
-export {}
-
 declare global {
-	// Enums
-	enum ClothingType {
-		SHIRT = 'SHIRT',
-		PANT = 'PANTS',
-		JACKET = 'JACKET',
-		JUMPER = 'JUMPER',
-		SHOE = 'SHOES',
-		HOODIE = 'HOODIE'
-	}
+  // Enums
+  enum ClothingType {
+    SHIRT = 'SHIRT',
+    PANTS = 'PANTS',
+    JACKET = 'JACKET',
+    JUMPER = 'JUMPER',
+    SHOES = 'SHOES',
+    HOODIE = 'HOODIE'
+  }
 
-	enum Color {
-		RED = 'RED',
-		BLUE = 'BLUE',
-		BROWN = 'BROWN',
-		BEIGE = 'BEIGE',
-		GREEN = 'GREEN',
-		BLACK = 'BLACK',
-		WHITE = 'WHITE',
-		YELLOW = 'YELLOW'
-	}
+  enum Occasion {
+    CASUAL = 'CASUAL',
+    WORK = 'WORK',
+    SPORT = 'SPORT',
+    FORMAL = 'FORMAL'
+  }
 
-	enum Style {
-		CASUAL = 'CASUAL',
-		WORK = 'WORK',
-		FORMAL = 'FORMAL'
-	}
+  enum Color {
+    RED = 'RED',
+    BLUE = 'BLUE',
+    BROWN = 'BROWN',
+    PINK = 'PINK',
+    GREY = 'GREY',
+    BEIGE = 'BEIGE',
+    GREEN = 'GREEN',
+    BLACK = 'BLACK',
+    WHITE = 'WHITE',
+    YELLOW = 'YELLOW'
+  }
 
-	// Models
-	interface Outfit {
-		id: number
-		picture?: string | null
-		preview: string[]
-		timesWorn: number
-		lastWorn?: Date | null
-		isUsed: boolean
-		isAvailable: boolean
-		isWorn: boolean
-		createdAt: Date
-		updatedAt: Date
-		items: OutfitItem[]
-		userId?: string | null
-		User?: User | null
-	}
+  enum Style {
+    CASUAL = 'CASUAL',
+    WORK = 'WORK',
+    FORMAL = 'FORMAL'
+  }
 
-	interface OutfitItem {
-		outfitId: number
-		clothingItemId: number
-		outfit: Outfit
-		clothingItem: ClothingItem
-	}
+  // Models
+  interface Outfit {
+    id: number
+    occasion: Occasion
+    picture?: string | null
+    preview: string[]
+    timesWorn: number
+    lastWorn?: Date | null
+    isUsed: boolean
+    isAvailable: boolean
+    isWorn: boolean
+    createdAt: Date
+    updatedAt: Date
+    items: OutfitItem[]
+    userId?: string | null
+    User?: User | null
+  }
 
-	interface ClothingItem {
-		id: number
-		type: ClothingType
-		name?: string | null
-		color?: Color | null
-		picture?: string | null
-		timesWorn: number
-		lastWorn?: Date | null
-		isFavorite: boolean
-		isAvailable: boolean
-		isDeleted: boolean
-		createdAt: Date
-		updatedAt: Date
-		outfits: OutfitItem[]
-		wardrobes: WardrobeItem[]
-		favorites: FavoriteItem[]
-		wornWith: WornWithItem[]
-		wornBy: WornWithItem[]
-	}
+  interface OutfitItem {
+    outfitId: number
+    clothingItemId: number
+    outfit: Outfit
+    clothingItem: ClothingItem
+  }
 
-	interface WornWithItem {
-		itemId: number
-		wornWithItemId: number
-		timesWornTogether: number
-		item: ClothingItem
-		wornWithItem: ClothingItem
-	}
+  interface ClothingItem {
+    id: number
+    type: ClothingType
+    name?: string | null
+    color?: Color | null
+    picture?: string | null
+    timesWorn: number
+    lastWorn?: Date | null
+    isFavorite: boolean
+    isAvailable: boolean
+    isDeleted: boolean
+    createdAt: Date
+    updatedAt: Date
+    outfits: OutfitItem[]
+    wardrobes: WardrobeItem[]
+    favorites: FavoriteItem[]
+    wornWith: WornWithItem[]
+    wornBy: WornWithItem[]
+  }
 
-	interface User {
-		id: number
-		clerkId: string
-		createdAt: Date
-		updatedAt: Date
-		outfits: Outfit[]
-		wardrobe: WardrobeItem[]
-		favorites: FavoriteItem[]
-	}
+  interface WornWithItem {
+    itemId: number
+    wornWithItemId: number
+    timesWornTogether: number
+    item: ClothingItem
+    wornWithItem: ClothingItem
+  }
 
-	interface WardrobeItem {
-		userId: string
-		clothingItemId: number
-		user: User
-		clothingItem: ClothingItem
-	}
+  interface User {
+    id: number
+    clerkId: string
+    createdAt: Date
+    updatedAt: Date
+    outfits: Outfit[]
+    wardrobe: WardrobeItem[]
+    favorites: FavoriteItem[]
+  }
 
-	interface FavoriteItem {
-		userId: string
-		clothingItemId: number
-		user: User
-		clothingItem: ClothingItem
-	}
-	type ItemForm = {
-		type: 'SHIRT' | 'PANTS' | 'JACKET' | 'JUMPER' | 'SHOES'
-		color:
-			| 'RED'
-			| 'BLUE'
-			| 'BROWN'
-			| 'BEIGE'
-			| 'GREEN'
-			| 'BLACK'
-			| 'WHITE'
-			| 'YELLOW'
-			| 'GREY'
-	}
-	type Item = {
-		type: 'SHIRT' | 'PANTS' | 'JACKET' | 'JUMPER' | 'SHOES'
-		color:
-			| 'RED'
-			| 'BLUE'
-			| 'BROWN'
-			| 'BEIGE'
-			| 'GREEN'
-			| 'BLACK'
-			| 'WHITE'
-			| 'YELLOW'
-			| 'GREY'
-		picture: string
-	}
+  interface WardrobeItem {
+    userId: string
+    clothingItemId: number
+    user: User
+    isAvailable: ClothingItem['isAvailable']
+    clothingItem: ClothingItem
+  }
 
-	type ResponseClothingItem = {
-		id: number
-		type: ClothingType
-		name: string
-		color: Color | null
-		picture: string | null
-		wornWith: {
-			id: number
-			type: ClothingType
-			name: string
-			color: Color | null
-			picture: string | null
-		}[]
-		outfits: {
-			id: number
-			picture: string | null
-			timesWorn: number
-			lastWorn: Date | null
-		}[]
-	}
+  interface FavoriteItem {
+    userId: string
+    clothingItemId: number
+    user: User
+    clothingItem: ClothingItem
+  }
 
-	type ResponseWardrobe = {
-		Jumper: ResponseClothingItem[]
-		Pants: ResponseClothingItem[]
-		Shirt: ResponseClothingItem[]
-		Shoes: ResponseClothingItem[]
-	}
+  type ItemForm = {
+    type: 'SHIRT' | 'PANTS' | 'JACKET' | 'JUMPER' | 'SHOES'
+    color:
+      | 'RED'
+      | 'BLUE'
+      | 'BROWN'
+      | 'BEIGE'
+      | 'GREEN'
+      | 'BLACK'
+      | 'WHITE'
+      | 'YELLOW'
+      | 'GREY'
+  }
 
-	type ApiResponse = {
-		message: string
-		data: ResponseWardrobe
-	}
+  type Item = {
+    type: 'SHIRT' | 'PANTS' | 'JACKET' | 'JUMPER' | 'SHOES'
+    color:
+      | 'RED'
+      | 'BLUE'
+      | 'BROWN'
+      | 'BEIGE'
+      | 'GREEN'
+      | 'BLACK'
+      | 'WHITE'
+      | 'YELLOW'
+      | 'GREY'
+    image: string
+  }
+
+  type ResponseClothingItem = {
+    id: number
+    type: ClothingType
+    name: string
+    color: Color | null
+    picture: string | null
+    wornWith: {
+      id: number
+      type: ClothingType
+      name: string
+      color: Color | null
+      picture: string | null
+    }[]
+    outfits: {
+      id: number
+      picture: string | null
+      timesWorn: number
+      lastWorn: Date | null
+    }[]
+  }
+
+  type ResponseWardrobe = {
+    Jumper: ResponseClothingItem[]
+    Pants: ResponseClothingItem[]
+    Shirt: ResponseClothingItem[]
+    Shoes: ResponseClothingItem[]
+  }
+
+  type ApiResponse = {
+    message: string
+    data: any
+  }
 }
+
+export {}

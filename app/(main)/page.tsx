@@ -1,9 +1,8 @@
-"use client"
+'use client'
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { Shirt, Layers } from "lucide-react"
-
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Shirt, Layers } from 'lucide-react'
 
 export default function HomePage() {
   return (
@@ -20,9 +19,12 @@ export default function HomePage() {
               whileTap={{ scale: 0.95 }}
             >
               <Shirt className="w-12 h-12 mb-4 text-stone-700" />
-              <h2 className="mb-2 text-2xl font-semibold text-stone-800">Your Wardrobe</h2>
+              <h2 className="mb-2 text-2xl font-semibold text-stone-800">
+                Your Wardrobe
+              </h2>
               <p className="text-stone-600">
-                Explore and manage your clothing items. Add new pieces, categorize, and keep your wardrobe organized.
+                Explore and manage your clothing items. Add new pieces,
+                categorize, and keep your wardrobe organized.
               </p>
             </motion.div>
           </Link>
@@ -33,9 +35,12 @@ export default function HomePage() {
               whileTap={{ scale: 0.95 }}
             >
               <Layers className="w-12 h-12 mb-4 text-stone-700" />
-              <h2 className="mb-2 text-2xl font-semibold text-stone-800">Your Outfits</h2>
+              <h2 className="mb-2 text-2xl font-semibold text-stone-800">
+                Your Outfits
+              </h2>
               <p className="text-stone-600">
-                Create and browse your outfit combinations. Mix and match items to plan your perfect look.
+                Create and browse your outfit combinations. Mix and match items
+                to plan your perfect look.
               </p>
             </motion.div>
           </Link>
