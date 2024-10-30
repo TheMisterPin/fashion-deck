@@ -3,12 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
-import {
-  Card, CardContent, CardHeader, CardTitle,
-} from '@/components/ui/card'
 
-export default function ProgressiveLoader({ status } :{ status : string }) {
+import { cn } from '@/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+export default function ProgressiveLoader({ status }: { status: string }) {
   const [showIframe, setShowIframe] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
 
@@ -20,6 +19,7 @@ export default function ProgressiveLoader({ status } :{ status : string }) {
       const timer = setTimeout(() => {
         setIsVisible(false)
       }, 1500)
+
       return () => clearTimeout(timer)
     }
   }, [status])
@@ -32,8 +32,8 @@ export default function ProgressiveLoader({ status } :{ status : string }) {
       transition: {
         type: 'spring',
         stiffness: 260,
-        damping: 20,
-      },
+        damping: 20
+      }
     },
     exit: {
       scale: 0,
@@ -41,13 +41,13 @@ export default function ProgressiveLoader({ status } :{ status : string }) {
       transition: {
         type: 'spring',
         stiffness: 260,
-        damping: 20,
-      },
-    },
+        damping: 20
+      }
+    }
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-background">
       <AnimatePresence>
         {isVisible && (
           <motion.div
@@ -66,56 +66,55 @@ export default function ProgressiveLoader({ status } :{ status : string }) {
                 <AnimatePresence mode="wait">
                   {!showIframe ? (
                     <motion.ul
-                    key="steps"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-4"
-                  >
-                    {steps.map((step, index) => (
-                    <motion.li
-                    key={step}
-                    initial={{ x: -50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-3 text-lg"
-                  >
-                    {steps.indexOf(step) < steps.indexOf(status) ? (
-                    <CheckCircle2 className="text-primary h-5 w-5" />
-                  ) : step === status ? (
-                    <Loader2 className="animate-spin text-primary h-5 w-5" />
+                      key="steps"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="space-y-4"
+                    >
+                      {steps.map((step, index) => (
+                        <motion.li
+                          key={step}
+                          initial={{ x: -50, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex items-center gap-3 text-lg"
+                        >
+                          {steps.indexOf(step) < steps.indexOf(status) ? (
+                            <CheckCircle2 className="w-5 h-5 text-primary" />
+                          ) : step === status ? (
+                            <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                          ) : (
+                            <Circle className="w-5 h-5 text-muted-foreground" />
+                          )}
+                          <span
+                            className={cn(
+                              'text-sm font-medium',
+                              steps.indexOf(step) <= steps.indexOf(status)
+                                ? 'text-foreground'
+                                : 'text-muted-foreground'
+                            )}
+                          >
+                            {step}
+                          </span>
+                        </motion.li>
+                      ))}
+                    </motion.ul>
                   ) : (
-                    <Circle className="text-muted-foreground h-5 w-5" />
-                  )}
-                    <span
-                    className={cn(
-														  'text-sm font-medium',
-														  steps.indexOf(step) <= steps.indexOf(status)
-														    ? 'text-foreground'
-														    : 'text-muted-foreground',
-                    )}
-                  >
-                    {step}
-                  </span>
-                  </motion.li>
-                  ))}
-                  </motion.ul>
-                  ) : (
-                  <motion.div
-                  key="iframe"
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <iframe
-                  src="https://lottie.host/embed/4179f226-b920-455f-af17-b315578ea617/VMMbauLpUp.json"
-                  className="w-full h-64 rounded-md border border-input"
-                  title="Loaded Content"
-                />
-                </motion.div>
+                    <motion.div
+                      key="iframe"
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <iframe
+                        src="https://lottie.host/embed/4179f226-b920-455f-af17-b315578ea617/VMMbauLpUp.json"
+                        className="w-full h-64 border rounded-md border-input"
+                        title="Loaded Content"
+                      />
+                    </motion.div>
                   )}
                 </AnimatePresence>
-
               </CardContent>
             </Card>
           </motion.div>

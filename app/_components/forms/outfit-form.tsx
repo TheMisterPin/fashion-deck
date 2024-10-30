@@ -6,12 +6,20 @@ import { Shirt } from 'lucide-react'
 import { PiPants as Pants, PiHoodie as Sweater } from 'react-icons/pi'
 import { GiConverseShoe as Shoe } from 'react-icons/gi'
 import Image from 'next/image'
+import { toast } from 'sonner'
+
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import ClothingTypeSelector from './clothing-type-selector'
 import ClothingItemSelector from './clothing-item-selector'
-import { toast } from 'sonner'
+import { useWardrobeContext } from '@/context/wardrobe-context'
 
 const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY
 
@@ -24,27 +32,25 @@ enum Occasion {
 
 type OutfitFormProps = {
   onSubmitSuccess: () => void
-  wardrobeItems: ResponseWardrobe
-};
+}
 
-export default function OutfitForm({
-  onSubmitSuccess,
-  wardrobeItems,
-}: OutfitFormProps) {
+export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
   const [selectedItems, setSelectedItems] = useState<ResponseClothingItem[]>([])
   const [loading, setLoading] = useState(false)
   const [activeSelector, setActiveSelector] = useState<string | null>(null)
   const [stackedImageBlob, setStackedImageBlob] = useState<Blob | null>(null)
   const [occasion, setOccasion] = useState<Occasion>(Occasion.CASUAL)
+  const { wardrobeItems } = useWardrobeContext()
 
-  const shirts = wardrobeItems.Shirt
-  const pants = wardrobeItems.Pants
-  const shoes = wardrobeItems.Shoes
-  const jumpers = wardrobeItems.Jumper
+  const shirts = wardrobeItems?.Shirt
+  const pants = wardrobeItems?.Pants
+  const shoes = wardrobeItems?.Shoes
+  const jumpers = wardrobeItems?.Jumper
 
   const handleSelect = (item: ResponseClothingItem) => {
     setSelectedItems((prev) => {
       const filtered = prev.filter((i) => i.type !== item.type)
+
       return [...filtered, item]
     })
     setActiveSelector(null)
@@ -56,28 +62,37 @@ export default function OutfitForm({
 
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
+
       if (!ctx) return
 
       canvas.width = 300
       canvas.height = 400
 
       const images = await Promise.all(
-        selectedItems.map((item) => new Promise<HTMLImageElement>((resolve, reject) => {
-          const img = new window.Image()
-          img.crossOrigin = 'anonymous'
-          img.onload = () => resolve(img)
-          img.onerror = reject
-          img.src = item.picture!
-        })),
+        selectedItems.map(
+          (item) =>
+            new Promise<HTMLImageElement>((resolve, reject) => {
+              const img = new window.Image()
+
+              img.crossOrigin = 'anonymous'
+              img.onload = () => resolve(img)
+              img.onerror = reject
+              img.src = item.picture!
+            })
+        )
       )
 
       images.forEach((img, index) => {
         const x = 50 * index
         const y = 50 * index
+
         ctx.drawImage(img, x, y, 200, 200)
       })
 
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve))
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve)
+      )
+
       if (blob) {
         setStackedImageBlob(blob)
       }
@@ -89,30 +104,35 @@ export default function OutfitForm({
   const uploadToImgbb = async (imageBlob: Blob): Promise<string> => {
     const formData = new FormData()
     const processedFile = new File([imageBlob], 'processed_image.png', {
-      type: 'image/png',
+      type: 'image/png'
     })
+
     formData.append('image', processedFile)
     formData.append('key', IMGBB_API_KEY || '')
 
     const response = await axios.post(
       `https://api.imgbb.com/1/upload?expiration=15552000&key=${IMGBB_API_KEY}`,
-      formData,
+      formData
     )
+
     if (response.data.status !== 200) {
       throw new Error('Failed to upload image to ImgBB')
     }
     const imageUrl = response.data.data.url
+
     return imageUrl
   }
 
   const onSubmit = async () => {
     if (selectedItems.length === 0) {
       alert('Please select at least one clothing item')
+
       return
     }
     setLoading(true)
     try {
       let pictureUrl = null
+
       if (stackedImageBlob) {
         pictureUrl = await uploadToImgbb(stackedImageBlob)
       }
@@ -124,19 +144,22 @@ export default function OutfitForm({
         occasion: occasion
       }
       const response = await axios.post('/api/outfits', outfitData)
+
       if (response.status === 201) {
         onSubmitSuccess()
       } else {
         throw new Error('Failed to create outfit')
       }
     } catch (error) {
+      console.error(error)
       toast.error('Failed to create the outfit')
     } finally {
       setLoading(false)
     }
   }
 
-  const getSelectedItem = (type: string) => selectedItems.find((item) => item.type === type)
+  const getSelectedItem = (type: string) =>
+    selectedItems.find((item) => item.type === type)
 
   return (
     <div className="space-y-6">
@@ -167,28 +190,28 @@ export default function OutfitForm({
           selected={!!getSelectedItem('JUMPER')}
         />
       </div>
-      {activeSelector === 'Shirt' && (
+      {activeSelector === 'Shirt' && shirts && (
         <ClothingItemSelector
           items={shirts}
           onSelect={handleSelect}
           onClose={() => setActiveSelector(null)}
         />
       )}
-      {activeSelector === 'Pants' && (
+      {activeSelector === 'Pants' && pants && (
         <ClothingItemSelector
           items={pants}
           onSelect={handleSelect}
           onClose={() => setActiveSelector(null)}
         />
       )}
-      {activeSelector === 'Shoes' && (
+      {activeSelector === 'Shoes' && shoes && (
         <ClothingItemSelector
           items={shoes}
           onSelect={handleSelect}
           onClose={() => setActiveSelector(null)}
         />
       )}
-      {activeSelector === 'Jumper' && (
+      {activeSelector === 'Jumper' && jumpers && (
         <ClothingItemSelector
           items={jumpers}
           onSelect={handleSelect}
@@ -201,13 +224,11 @@ export default function OutfitForm({
           {selectedItems
             .sort((a, b) => {
               const order = ['SHIRT', 'JUMPER', 'PANTS', 'SHOES']
+
               return order.indexOf(a.type) - order.indexOf(b.type)
             })
             .map((item) => (
-              <div
-                key={item.id}
-                className="relative w-40 h-40"
-              >
+              <div key={item.id} className="relative w-40 h-40">
                 <Image
                   src={item.picture || ''}
                   alt={item.name || 'No Image'}
@@ -221,7 +242,10 @@ export default function OutfitForm({
 
       <div className="mt-4">
         <Label htmlFor="occasion">Select Occasion:</Label>
-        <Select value={occasion} onValueChange={(value) => setOccasion(value as Occasion)}>
+        <Select
+          value={occasion}
+          onValueChange={(value) => setOccasion(value as Occasion)}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select an occasion" />
           </SelectTrigger>

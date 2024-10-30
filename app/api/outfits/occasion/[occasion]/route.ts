@@ -1,18 +1,21 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
 import { Occasion } from '@prisma/client'
+
+import prisma from '@/lib/prisma'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { occasion: string } },
+  { params }: { params: { occasion: string } }
 ) {
   const { userId } = await auth()
+
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
   const { occasion } = params
+
   if (!occasion) {
     return NextResponse.json(
       { message: 'Must specify occasion' },
@@ -33,18 +36,18 @@ export async function GET(
     const outfits = await prisma.outfit.findMany({
       where: {
         userId,
-        occasion: formattedOccasion,
+        occasion: formattedOccasion
       },
       include: {
         items: {
           include: {
-            clothingItem: true,
-          },
-        },
+            clothingItem: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     })
 
     const formattedOutfits = outfits.map((outfit) => ({
@@ -62,22 +65,23 @@ export async function GET(
         type: item.clothingItem.type,
         name: item.clothingItem.name,
         color: item.clothingItem.color,
-        picture: item.clothingItem.picture,
-      })),
+        picture: item.clothingItem.picture
+      }))
     }))
 
     return NextResponse.json(
       { message: 'Outfits retrieved successfully', outfits: formattedOutfits },
-      { status: 200 },
+      { status: 200 }
     )
   } catch (error) {
     console.error('Error fetching outfits:', error)
+
     return NextResponse.json(
       {
         message: 'Error fetching outfits',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 },
+      { status: 500 }
     )
   } finally {
     await prisma.$disconnect()

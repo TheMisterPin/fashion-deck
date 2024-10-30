@@ -1,10 +1,8 @@
+import { Card, CardContent } from '@/components/ui/card'
 import { motion } from 'framer-motion'
-import {
-  MoreVertical, Trash2, Edit2, Star,
-} from 'lucide-react'
+import { MoreVertical, Trash2, Edit2, Star } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +16,8 @@ interface Props {
 }
 
 export default function ItemCard({ item, onOpenDetails }: Props) {
+
+
   return (
     <motion.div
       key={item.id}
@@ -25,8 +25,9 @@ export default function ItemCard({ item, onOpenDetails }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       whileHover={{ scale: 1.02 }}
+ 
     >
-      <Card
+      <Card 
         className="transition-shadow duration-300 border shadow-md border-stone-200 hover:shadow-lg"
         onClick={() => onOpenDetails(item.id)}
       >
@@ -39,12 +40,8 @@ export default function ItemCard({ item, onOpenDetails }: Props) {
             className="object-cover w-24 h-24 rounded-md bg-stone-100"
           />
           <div className="flex-grow">
-            <h3 className="text-lg font-semibold text-stone-800">
-              {item.name}
-            </h3>
-            <p className="text-sm text-stone-600">
-              {item.type}
-            </p>
+            <h3 className="text-lg font-semibold text-stone-800">{item.name}</h3>
+            <p className="text-sm text-stone-600">{item.type}</p>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -54,19 +51,13 @@ export default function ItemCard({ item, onOpenDetails }: Props) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem>
-                <Edit2 className="w-4 h-4 mr-2" />
-                {' '}
-                Edit
+                <Edit2 className="w-4 h-4 mr-2" /> Edit
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Star className="w-4 h-4 mr-2" />
-                {' '}
-                Favorite
+                <Star className="w-4 h-4 mr-2" /> Favorite
               </DropdownMenuItem>
               <DropdownMenuItem className="text-red-600">
-                <Trash2 className="w-4 h-4 mr-2" />
-                {' '}
-                Delete
+                <Trash2 className="w-4 h-4 mr-2" /> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -3,7 +3,9 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isProtectedRoute = createRouteMatcher(['/outfits(.*)', '/wardrobe(.*)'])
 
 export default clerkMiddleware((auth, req) => {
-
+   (req: any) => ({
+    secretKey : process.env.CLERK_SECRET_KEY
+  })
   if (!auth().userId && isProtectedRoute(req)) {
     // Add custom logic to run before redirecting
 

@@ -1,148 +1,112 @@
 {
   "extends": [
-    "next/core-web-vitals",
-    "airbnb",
-    "airbnb/hooks",
-    "plugin:jsx-a11y/recommended"
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "import",
+    "@typescript-eslint"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json",
-    "ecmaVersion": 2018,
+    "ecmaVersion": 12,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
     }
   },
-  "settings": {
-    "import/resolver": {
-      "typescript": {
-        "project": "./tsconfig.json"
-      }
-    }
-  },
-  "plugins": [
-    "@typescript-eslint"
-  ],
-  "overrides": [
-    {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx"
-      ],
-      "parserOptions": {
-        "project": [
-          "./tsconfig.json"
-        ]
-      }
-    }
-  ],
   "rules": {
-    "no-console": "warn",
-    "react/jsx-props-no-spreading": "off",
-    "react/forbid-prop-types": "off",
-    "react/button-has-type": "off",
-    "react/require-default-props": "off",
+    "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-param-reassign": "off",
-    "react/jsx-filename-extension": [
-      1,
+    "import/order": [
+      "error",
       {
-        "extensions": [
-          ".tsx"
+        "newlines-between": "always",
+        "groups": [
+          [
+            "builtin",
+            "external",
+            "internal"
+          ]
         ]
       }
     ],
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
-    "react/jsx-one-expression-per-line": [
+    "prettier/prettier": [
       "error",
       {
-        "allow": "literal"
+        "singleQuote": true,
+        "trailingComma": "none",
+        "semi": false,
+        "tabWidth": 2
       }
     ],
-    "react/jsx-first-prop-new-line": [
-      "error",
-      "multiline"
-    ],
-    "react/jsx-max-props-per-line": [
-      "error",
-      {
-        "maximum": 1,
-        "when": "always"
-      }
-    ],
-    "react/jsx-closing-bracket-location": [
-      "error",
-      "line-aligned"
-    ],
+    "@typescript-eslint/no-unused-vars": "warn",
     "react/jsx-indent": [
       "error",
-      2,
-      {
-        "checkAttributes": true,
-        "indentLogicalExpressions": true
-      }
+      2
     ],
     "react/jsx-indent-props": [
       "error",
       2
     ],
-    "react/jsx-curly-spacing": [
+    "padding-line-between-statements": [
       "error",
       {
-        "when": "never",
-        "children": true
-      }
-    ],
-    "react/jsx-curly-newline": [
-      "error",
+        "blankLine": "always",
+        "prev": "*",
+        "next": "return"
+      },
       {
-        "multiline": "consistent",
-        "singleline": "consistent"
-      }
-    ],
-    "react/jsx-boolean-value": [
-      "error",
-      "never"
-    ],
-    "react/jsx-space-before-closing": [
-      "error",
-      "always"
-    ], // Enforce space before closing bracket
-    "react/jsx-tag-spacing": "off",
-    "react/jsx-wrap-multilines": [
-      "error",
+        "blankLine": "always",
+        "prev": [
+          "const",
+          "let",
+          "var"
+        ],
+        "next": "*"
+      },
       {
-        "declaration": "parens-new-line",
-        "assignment": "parens-new-line",
-        "return": "parens-new-line",
-        "arrow": "parens-new-line",
-        "condition": "parens-new-line",
-        "logical": "parens-new-line",
-        "prop": "parens-new-line"
+        "blankLine": "any",
+        "prev": [
+          "const",
+          "let",
+          "var"
+        ],
+        "next": [
+          "const",
+          "let",
+          "var"
+        ]
+      },
+      {
+        "blankLine": "always",
+        "prev": "*",
+        "next": "export"
+      },
+      {
+        "blankLine": "always",
+        "prev": "directive",
+        "next": "*"
+      },
+      {
+        "blankLine": "any",
+        "prev": "directive",
+        "next": "directive"
       }
-    ],
-    "react/jsx-fragments": [
-      "error",
-      "element"
-    ],
-    "no-unused-vars": "error",
-    "no-extra-semi": "error",
-    "react/react-in-jsx-scope": "off",
-    "semi": [
-      "error",
-      "never"
-    ],
-    "linebreak-style": "off"
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
   }
 }

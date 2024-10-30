@@ -29,7 +29,7 @@ model Outfit {
 model OutfitItem {
   outfitId       Int
   clothingItemId Int
-  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id])
+  clothingItem   ClothingItem @relation(fields: [clothingItemId], references: [id], onDelete: Cascade)
   outfit         Outfit       @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
   @@id([outfitId, clothingItemId])
@@ -64,8 +64,8 @@ model WornWithItem {
   itemId            Int
   wornWithItemId    Int
   timesWornTogether Int          @default(1)
-  item              ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id])
-  wornWithItem      ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id])
+  item              ClothingItem @relation("ItemWornWith", fields: [itemId], references: [id], onDelete: Cascade)
+  wornWithItem      ClothingItem @relation("WornWithItem", fields: [wornWithItemId], references: [id], onDelete: Cascade)
 
   @@id([itemId, wornWithItemId])
 }
@@ -83,7 +83,7 @@ model User {
 model WardrobeItem {
   userId         String
   clothingItemId Int
-  clothingItem   ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id])
+  clothingItem   ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id],onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [clerkId])
 
   @@id([userId, clothingItemId])

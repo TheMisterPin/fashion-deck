@@ -1,16 +1,13 @@
-import { SignInButton } from '@clerk/nextjs'
-import { ArrowRight, Shirt } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button"
+import { SignInButton } from "@clerk/nextjs"
+import { ArrowRight, Shirt } from "lucide-react"
+import Link from "next/link"
 
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-stone-100">
       <header className="flex items-center px-4 lg:px-6 h-14 bg-stone-200">
-        <Link
-          className="flex items-center justify-center"
-          href="#"
-        >
+        <Link className="flex items-center justify-center" href="#">
           <Shirt className="w-6 h-6 mr-2 text-stone-700" />
           <span className="font-bold text-stone-800">Fashion Deck</span>
         </Link>
@@ -29,13 +26,12 @@ export default function LandingPage() {
                   Fashion Deck is your personal stylist in your pocket. Organize, plan, and track your outfits effortlessly.
                 </p>
                 <div className="mt-8">
-
-                  <SignInButton mode="modal">
-                    <Button className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white transition-colors duration-200 rounded-md bg-stone-800 hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500">
-                      Get Started
-											<ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                  </SignInButton>
+                              
+                <SignInButton mode="modal" >
+                  <Button className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white transition-colors duration-200 rounded-md bg-stone-800 hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500">
+                    Get Started
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button></SignInButton>
                 </div>
               </div>
             </div>

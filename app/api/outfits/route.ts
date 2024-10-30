@@ -45,10 +45,10 @@ export async function POST(req: NextRequest) {
               clothingItem: { connect: { id: clothingItemId } },
             })),
           },
-          isUsed: true, // Set to false initially
-          isWorn: false, // Set to false initially
-          timesWorn: 0, // Set to 0 initially
-          lastWorn: null, // Set to null initially
+          isUsed: true, 
+          isWorn: false, 
+          timesWorn: 0, 
+          lastWorn: null,
         },
         include: {
           items: {
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
                 wornWithItemId: itemId,
               },
             },
-            update: {},
+            update: {timesWornTogether : +1},
             create: {
               itemId: wornWithItemId,
               wornWithItemId: itemId,

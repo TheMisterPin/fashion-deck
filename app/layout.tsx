@@ -6,25 +6,26 @@ import { Toaster } from 'sonner'
 import Navbar from '@/components/ui/nabar'
 import LandingPage from './landing-page'
 
+
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
-  weight: '100 900',
+  weight: '100 900'
 })
 
 const geistMono = localFont({
   src: './fonts/GeistMonoVF.woff',
   variable: '--font-geist-mono',
-  weight: '100 900',
+  weight: '100 900'
 })
 
 export const metadata: Metadata = {
   title: 'Fashion-Deck',
-  description: 'Wardrobe Managenment tool',
+  description: 'Wardrobe Managenment tool'
 }
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode
 }>) {
@@ -41,7 +42,7 @@ export default function RootLayout({
           </SignedOut>
           <SignedIn>
             <Navbar />
-            <Toaster richColors/>
+            <Toaster richColors />
             {children}
           </SignedIn>
         </body>
