@@ -55,7 +55,7 @@ function OutfitCard({
             <div>
               <h3 className="font-semibold text-lg mb-2">Outfit {outfit.id}</h3>
               <p className="text-sm text-muted-foreground">
-                Occasion: {outfit.occasion}
+                Occasion: {outfit.occasion.toString()}
               </p>
               <p className="text-sm text-muted-foreground">
                 Times Worn: {outfit.timesWorn}

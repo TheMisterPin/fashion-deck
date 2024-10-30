@@ -96,6 +96,7 @@ const uploadToImgbb = async (imageBlob: Blob): Promise<string> => {
     return response.data.data.url // Return the URL directly
 }
 
+
 	const removeBackground = async (file: File): Promise<Blob> => {
 		const formData = new FormData()
 		formData.append('image_file', file)
