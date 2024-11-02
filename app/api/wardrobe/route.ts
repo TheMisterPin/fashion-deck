@@ -25,6 +25,8 @@ export async function GET() {
             name: true,
             color: true,
             picture: true,
+            timesWorn: true,
+            lastWorn: true,
             wornWith: {
               include: {
                 wornWithItem: {
@@ -99,6 +101,7 @@ export async function GET() {
           name: capitalizeFirstLetter(item.clothingItem.name),
           color: item.clothingItem.color?.toUpperCase() as Color,
           picture: item.clothingItem.picture,
+          timesWorn: item.clothingItem.timesWorn,
           wornWith: wornWithItems,
           outfits: outfits
         }
