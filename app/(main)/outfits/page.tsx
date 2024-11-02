@@ -2,11 +2,9 @@
 
 import { motion } from 'framer-motion'
 
-import AddOutfitModal from '@/app/_components/modals/add-outfit-modal'
-import RandomOutfitGenerator from '@/app/_components/misc/random-outfit-generator'
+import { AddOutfitModal, RandomOutfitGenerator, OutfitTab } from './components'
 import { useWardrobeContext } from '@/context/wardrobe-context'
-import Loader from '@/app/_components/loaders/loader'
-import OutfitTab from '@/app/_components/lists/outfit-list'
+import Loader from '@/components/loaders/loader'
 
 export default function OutfitPage() {
   const { isLoading, outfits, wardrobeItems, refreshOutfitData } =

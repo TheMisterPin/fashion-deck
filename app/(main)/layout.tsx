@@ -2,7 +2,7 @@
 
 import { useWardrobeData } from '@/hooks/use-wardrobe-data'
 import { WardrobeContext } from '@/context/wardrobe-context'
-import Loader from '../_components/loaders/loader'
+import Loader from '../../components/loaders/loader'
 
 export default function AuthenticatedLayout({
   children
@@ -14,7 +14,8 @@ export default function AuthenticatedLayout({
     isLoading,
     refreshItemsData,
     refreshOutfitData,
-    outfits
+    outfits,
+    clearStorage
   } = useWardrobeData()
 
   if (isLoading) {
@@ -28,7 +29,8 @@ export default function AuthenticatedLayout({
         isLoading,
         refreshItemsData,
         refreshOutfitData,
-        outfits
+        outfits,
+        clearStorage
       }}
     >
       {children}

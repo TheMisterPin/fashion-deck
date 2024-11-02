@@ -2,10 +2,10 @@
 
 import { motion } from 'framer-motion'
 
-import AddItemModal from '@/app/_components/forms/add-item-modal'
-import ItemList from '@/app/_components/lists/items-list'
+import AddItemModal from './components/add-item-modal'
+import ItemList from './components/items-list'
 import { useWardrobeContext } from '@/context/wardrobe-context'
-import Loader from '@/app/_components/loaders/loader'
+import Loader from '@/components/loaders/loader'
 
 export default function WardrobePage() {
   const { wardrobeItems, refreshItemsData, isLoading } = useWardrobeContext()

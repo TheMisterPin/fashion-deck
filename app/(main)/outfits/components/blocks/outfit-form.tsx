@@ -1,12 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { Shirt } from 'lucide-react'
 import { PiPants as Pants, PiHoodie as Sweater } from 'react-icons/pi'
 import { GiConverseShoe as Shoe } from 'react-icons/gi'
 import Image from 'next/image'
-import { toast } from 'sonner'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -20,8 +18,8 @@ import {
 import ClothingTypeSelector from './clothing-type-selector'
 import ClothingItemSelector from './clothing-item-selector'
 import { useWardrobeContext } from '@/context/wardrobe-context'
-
-const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY
+import { createStackedImage } from '@/utils/images'
+import { createOutfit } from '@/controllers/outfits'
 
 enum Occasion {
   CASUAL = 'CASUAL',
@@ -57,102 +55,33 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
   }
 
   useEffect(() => {
-    const createStackedImage = async () => {
-      if (selectedItems.length === 0) return
+    const generateStackedImage = async () => {
+      const imageUrls = selectedItems
+        .map((item) => item.picture)
+        .filter((url): url is string => url !== null)
 
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
+      const blob = await createStackedImage(imageUrls)
 
-      if (!ctx) return
-
-      canvas.width = 300
-      canvas.height = 400
-
-      const images = await Promise.all(
-        selectedItems.map(
-          (item) =>
-            new Promise<HTMLImageElement>((resolve, reject) => {
-              const img = new window.Image()
-
-              img.crossOrigin = 'anonymous'
-              img.onload = () => resolve(img)
-              img.onerror = reject
-              img.src = item.picture!
-            })
-        )
-      )
-
-      images.forEach((img, index) => {
-        const x = 50 * index
-        const y = 50 * index
-
-        ctx.drawImage(img, x, y, 200, 200)
-      })
-
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve)
-      )
-
-      if (blob) {
-        setStackedImageBlob(blob)
-      }
+      setStackedImageBlob(blob)
     }
 
-    createStackedImage()
+    generateStackedImage()
+
+    generateStackedImage()
   }, [selectedItems])
 
-  const uploadToImgbb = async (imageBlob: Blob): Promise<string> => {
-    const formData = new FormData()
-    const processedFile = new File([imageBlob], 'processed_image.png', {
-      type: 'image/png'
-    })
-
-    formData.append('image', processedFile)
-    formData.append('key', IMGBB_API_KEY || '')
-
-    const response = await axios.post(
-      `https://api.imgbb.com/1/upload?expiration=15552000&key=${IMGBB_API_KEY}`,
-      formData
-    )
-
-    if (response.data.status !== 200) {
-      throw new Error('Failed to upload image to ImgBB')
-    }
-    const imageUrl = response.data.data.url
-
-    return imageUrl
-  }
-
   const onSubmit = async () => {
-    if (selectedItems.length === 0) {
-      alert('Please select at least one clothing item')
-
-      return
-    }
     setLoading(true)
     try {
-      let pictureUrl = null
+      const success = await createOutfit(
+        selectedItems,
+        stackedImageBlob,
+        occasion
+      )
 
-      if (stackedImageBlob) {
-        pictureUrl = await uploadToImgbb(stackedImageBlob)
-      }
-
-      const outfitData = {
-        outfitParts: selectedItems.map((item) => item.id),
-        picture: await pictureUrl,
-        preview: selectedItems.map((item) => item.picture),
-        occasion: occasion
-      }
-      const response = await axios.post('/api/outfits', outfitData)
-
-      if (response.status === 201) {
+      if (success) {
         onSubmitSuccess()
-      } else {
-        throw new Error('Failed to create outfit')
       }
-    } catch (error) {
-      console.error(error)
-      toast.error('Failed to create the outfit')
     } finally {
       setLoading(false)
     }

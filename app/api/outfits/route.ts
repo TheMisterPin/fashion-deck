@@ -1,33 +1,32 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server'
-
 import { auth } from '@clerk/nextjs/server'
 
 import prisma from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
+
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
   try {
     const data = await req.json()
-    const {
-      outfitParts, picture, preview, occasion,
-    } = data
+    const { outfitParts, picture, preview, occasion } = data
 
     // Validate input
     if (!Array.isArray(outfitParts) || outfitParts.length === 0) {
       return NextResponse.json(
         { message: 'Invalid outfit parts' },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
     if (!picture || !preview || !Array.isArray(preview)) {
       return NextResponse.json(
         { message: 'Missing picture or preview' },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
@@ -42,47 +41,49 @@ export async function POST(req: NextRequest) {
           User: { connect: { clerkId: userId } },
           items: {
             create: outfitParts.map((clothingItemId) => ({
-              clothingItem: { connect: { id: clothingItemId } },
-            })),
+              clothingItem: { connect: { id: clothingItemId } }
+            }))
           },
-          isUsed: true, 
-          isWorn: false, 
-          timesWorn: 0, 
-          lastWorn: null,
+          isUsed: true,
+          isWorn: false,
+          timesWorn: 0,
+          lastWorn: null
         },
         include: {
           items: {
             include: {
-              clothingItem: true,
-            },
+              clothingItem: true
+            }
           },
-          User: true,
-        },
+          User: true
+        }
       })
 
       // Create WornWithItem relationships (but don't increment timesWornTogether)
       const wornWithPromises = outfitParts
-        .flatMap((itemId, i) => outfitParts.slice(i + 1).map((wornWithItemId) => [
-          prisma.wornWithItem.upsert({
-            where: { itemId_wornWithItemId: { itemId, wornWithItemId } },
-            update: {},
-            create: { itemId, wornWithItemId, timesWornTogether: 0 },
-          }),
-          prisma.wornWithItem.upsert({
-            where: {
-              itemId_wornWithItemId: {
+        .flatMap((itemId, i) =>
+          outfitParts.slice(i + 1).map((wornWithItemId) => [
+            prisma.wornWithItem.upsert({
+              where: { itemId_wornWithItemId: { itemId, wornWithItemId } },
+              update: {},
+              create: { itemId, wornWithItemId, timesWornTogether: 0 }
+            }),
+            prisma.wornWithItem.upsert({
+              where: {
+                itemId_wornWithItemId: {
+                  itemId: wornWithItemId,
+                  wornWithItemId: itemId
+                }
+              },
+              update: { timesWornTogether: +1 },
+              create: {
                 itemId: wornWithItemId,
                 wornWithItemId: itemId,
-              },
-            },
-            update: {timesWornTogether : +1},
-            create: {
-              itemId: wornWithItemId,
-              wornWithItemId: itemId,
-              timesWornTogether: 0,
-            },
-          }),
-        ]))
+                timesWornTogether: 0
+              }
+            })
+          ])
+        )
         .flat()
 
       await Promise.all(wornWithPromises)
@@ -102,25 +103,26 @@ export async function POST(req: NextRequest) {
           lastWorn: result.lastWorn,
           isUsed: result.isUsed,
           isWorn: result.isWorn,
-          items: result.items.map((item : any) => ({
+          items: result.items.map((item: any) => ({
             id: item.clothingItem.id,
             type: item.clothingItem.type,
             name: item.clothingItem.name,
             color: item.clothingItem.color,
-            picture: item.clothingItem.picture,
-          })),
-        },
+            picture: item.clothingItem.picture
+          }))
+        }
       },
-      { status: 201 },
+      { status: 201 }
     )
   } catch (error) {
     console.error('Error creating outfit:', error)
+
     return NextResponse.json(
       {
         message: 'Error creating outfit',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 },
+      { status: 500 }
     )
   } finally {
     await prisma.$disconnect()
@@ -129,6 +131,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   const { userId } = await auth()
+
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
@@ -138,43 +141,44 @@ export async function GET() {
       include: {
         items: {
           include: {
-            clothingItem: true,
-          },
-        },
+            clothingItem: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     })
 
-    const formattedOutfits = outfits.map((outfit : any) => ({
+    const formattedOutfits = outfits.map((outfit: any) => ({
       id: outfit.id,
       picture: outfit.picture,
       occasion: outfit.occasion.toString(),
       preview: outfit.preview,
       timesWorn: outfit.timesWorn,
       lastWorn: outfit.lastWorn,
-      items: outfit.items.map((item : any) => ({
+      items: outfit.items.map((item: any) => ({
         id: item.clothingItem.id,
         type: item.clothingItem.type,
         name: item.clothingItem.name,
         color: item.clothingItem.color,
-        picture: item.clothingItem.picture,
-      })),
+        picture: item.clothingItem.picture
+      }))
     }))
 
     return NextResponse.json(
       { message: 'Outfits retrieved successfully', outfits: formattedOutfits },
-      { status: 200 },
+      { status: 200 }
     )
   } catch (error) {
     console.error('Error fetching outfits:', error)
+
     return NextResponse.json(
       {
         message: 'Error fetching outfits',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 },
+      { status: 500 }
     )
   } finally {
     await prisma.$disconnect()

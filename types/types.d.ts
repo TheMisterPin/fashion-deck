@@ -153,6 +153,7 @@ declare global {
     name: string
     color: Color | null
     picture: string | null
+    timesWorn: number
     wornWith: {
       id: number
       type: ClothingType
