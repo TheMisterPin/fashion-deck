@@ -6,6 +6,7 @@ type WardrobeContextType = {
   isLoading: boolean
   refreshItemsData: () => void
   refreshOutfitData: () => void
+  clearStorage: () => void
 }
 
 export const WardrobeContext = createContext<WardrobeContextType | undefined>(

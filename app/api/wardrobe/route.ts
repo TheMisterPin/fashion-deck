@@ -1,7 +1,8 @@
-import { capitalizeFirstLetter } from '@/utils/formatters'
 import { auth } from '@clerk/nextjs/server'
 import { PrismaClient } from '@prisma/client'
 import { NextResponse } from 'next/server'
+
+import { capitalizeFirstLetter } from '@/utils/formatters'
 
 const prisma = new PrismaClient()
 
@@ -60,7 +61,6 @@ export async function GET() {
         { status: 404 }
       )
     }
-
 
     // Group the wardrobe items by their clothing type
     const groupedItems = wardrobe.reduce(
