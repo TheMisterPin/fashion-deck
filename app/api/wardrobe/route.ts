@@ -1,10 +1,11 @@
 import { auth } from '@clerk/nextjs/server'
-import { PrismaClient } from '@prisma/client'
+
 import { NextResponse } from 'next/server'
 
 import { capitalizeFirstLetter } from '@/utils/formatters'
+import prisma from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+
 
 export async function GET() {
   try {
@@ -22,7 +23,9 @@ export async function GET() {
           select: {
             id: true,
             type: true,
+            occasions: true,
             name: true,
+            description: true,
             color: true,
             picture: true,
             timesWorn: true,
@@ -33,8 +36,10 @@ export async function GET() {
                   select: {
                     id: true,
                     type: true,
+                    occasions: true,
                     name: true,
                     color: true,
+                    description: true,
                     picture: true
                   }
                 }
@@ -45,6 +50,7 @@ export async function GET() {
                 outfit: {
                   select: {
                     id: true,
+                    occasion: true,
                     picture: true,
                     timesWorn: true,
                     lastWorn: true
@@ -82,6 +88,8 @@ export async function GET() {
           id: ww.wornWithItem.id,
           type: capitalizeFirstLetter(ww.wornWithItem.type) as ClothingType,
           name: capitalizeFirstLetter(ww.wornWithItem.name),
+          description: ww.wornWithItem.description,
+        occasions: item.clothingItem.occasions as Occasion[],
           color: ww.wornWithItem.color?.toUpperCase() as Color,
           picture: ww.wornWithItem.picture
         }))
@@ -90,6 +98,7 @@ export async function GET() {
         const outfits = item.clothingItem.outfits.map((o) => ({
           id: o.outfit.id,
           picture: o.outfit.picture,
+          occasion: o.outfit.occasion as Occasion,
           timesWorn: o.outfit.timesWorn,
           lastWorn: o.outfit.lastWorn
         }))
@@ -98,9 +107,11 @@ export async function GET() {
         const formattedItem = {
           id: item.clothingItem.id,
           type: formattedType,
+          description: item.clothingItem.description,
           name: capitalizeFirstLetter(item.clothingItem.name),
           color: item.clothingItem.color?.toUpperCase() as Color,
           picture: item.clothingItem.picture,
+          occasions: item.clothingItem.occasions as Occasion[],
           timesWorn: item.clothingItem.timesWorn,
           wornWith: wornWithItems,
           outfits: outfits

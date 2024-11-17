@@ -22,6 +22,7 @@ import ProgressiveLoader from '../../../../components/loaders/progressive-loader
 import { createNewClothingItem } from '@/controllers/clothing'
 import { removeBackground, uploadToImgbb } from '@/utils/images'
 import { useWardrobeContext } from '@/context/wardrobe-context'
+import { Textarea } from '@/components/ui/textarea'
 
 type AddItemModalProps = {
   onAdd: () => void
@@ -56,6 +57,7 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
       const newItem = {
         type: data.type,
         image: imageUrl,
+        description: data.description,
         color: data.color
       }
 
@@ -126,6 +128,15 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
                     </Select>
                   )}
                 />
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+               <Input
+                  id="description"
+                  type="text"
+                  placeholder="Description"
+                  {...control.register('description')}
+               />
               </div>
               <div>
                 <Label htmlFor="color">Color</Label>
