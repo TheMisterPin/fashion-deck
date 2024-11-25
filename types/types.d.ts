@@ -153,7 +153,7 @@ declare global {
     id: number
     type: ClothingType
     name: string
-    occasions: Occasion[] 
+    occasions: Occasion[]
     description: string | null
     color: Color | null
     picture: string | null
@@ -162,7 +162,7 @@ declare global {
       id: number
       type: ClothingType
       description: string | null
-      occasions: Occasion []
+      occasions: Occasion[]
       name: string
       color: Color | null
       picture: string | null

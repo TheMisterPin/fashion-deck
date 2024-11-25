@@ -86,3 +86,22 @@ export const createStackedImage = async (
     return null
   }
 }
+
+export const uploadDirectly = async (file: File): Promise<string> => {
+  const formData = new FormData()
+
+  formData.append('image', file)
+  formData.append('key', IMGBB_API_KEY || '')
+
+  const response = await axios.post(
+    `https://api.imgbb.com/1/upload?expiration=15552000&key=${IMGBB_API_KEY}`,
+    formData
+  )
+
+  if (response.data.status !== 200) {
+    throw new Error('Failed to upload image to ImgBB')
+  }
+  const imageUrl = response.data.data.url
+
+  return imageUrl
+}

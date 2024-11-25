@@ -1,11 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
-
 import { NextResponse } from 'next/server'
 
 import { capitalizeFirstLetter } from '@/utils/formatters'
 import prisma from '@/lib/prisma'
-
-
 
 export async function GET() {
   try {
@@ -89,7 +86,7 @@ export async function GET() {
           type: capitalizeFirstLetter(ww.wornWithItem.type) as ClothingType,
           name: capitalizeFirstLetter(ww.wornWithItem.name),
           description: ww.wornWithItem.description,
-        occasions: item.clothingItem.occasions as Occasion[],
+          occasions: item.clothingItem.occasions as Occasion[],
           color: ww.wornWithItem.color?.toUpperCase() as Color,
           picture: ww.wornWithItem.picture
         }))

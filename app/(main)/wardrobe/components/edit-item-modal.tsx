@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import axios from 'axios'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -19,46 +20,95 @@ import {
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import ProgressiveLoader from '@/components/loaders/progressive-loader'
-import { createNewClothingItem } from '@/controllers/clothing'
 import { uploadDirectly } from '@/utils/images'
 import { useWardrobeContext } from '@/context/wardrobe-context'
 
-type AddItemModalProps = {
-  onAdd: () => void
+interface ItemForm {
+  type: ClothingType
+  description?: string
+  color: Color
 }
 
-export default function AddItemModal({ onAdd }: AddItemModalProps) {
+interface EditItemModalProps {
+  item: ResponseClothingItem
+  trigger?: React.ReactNode
+  onEdit?: () => void
+}
+
+export default function EditItemModal({
+  item,
+  trigger,
+  onEdit
+}: EditItemModalProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { handleSubmit, control } = useForm<ItemForm>()
+  const { handleSubmit, control, reset } = useForm<ItemForm>({
+    defaultValues: {
+      type: item.type as ClothingType,
+      description: item.description || '',
+      color: item.color as Color
+    }
+  })
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('Step1')
   const { refreshItemsData } = useWardrobeContext()
 
-  const onSubmit = async (data: ItemForm) => {
-    if (!file) {
-      alert('Please select an image file')
+  useEffect(() => {
+    reset({
+      type: item.type as ClothingType,
+      description: item.description || '',
+      color: item.color as Color
+    })
+  }, [item, reset])
 
-      return
-    }
-
+  const onSubmit = async (formData: ItemForm) => {
     setLoading(true)
-    setStatus('Uploading image...')
+    setStatus('Updating item...')
 
     try {
-      const imageUrl = await uploadDirectly(file)
+      let imageUrl = item.picture // Use existing image by default
 
-      setStatus('Creating item...')
-
-      const newItem = {
-        type: data.type,
-        image: imageUrl,
-        description: data.description,
-        color: data.color
+      if (file) {
+        setStatus('Uploading new image...')
+        imageUrl = await uploadDirectly(file)
       }
 
-      await createNewClothingItem({ item: newItem })
-      onAdd()
+      setStatus('Saving changes...')
+
+      // Only include changed fields in the update
+      const updateData: Partial<{
+        type: ClothingType
+        image: string | null
+        description: string | null
+        color: Color
+      }> = {}
+
+      if (formData.type !== item.type) {
+        updateData.type = formData.type
+      }
+
+      if (imageUrl !== item.picture) {
+        updateData.image = imageUrl
+      }
+
+      if (formData.description !== item.description) {
+        updateData.description = formData.description || null
+      }
+
+      if (formData.color !== item.color) {
+        updateData.color = formData.color
+      }
+
+      const response = await axios.patch(
+        `/api/clothing/edit/${item.id}`,
+        updateData
+      )
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update the item')
+      }
+
+      onEdit?.()
       setFile(null)
       refreshItemsData()
       setStatus('complete')
@@ -67,9 +117,8 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
         setIsOpen(false)
       }, 700)
     } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Failed to upload the image. Please try again.')
-
+      console.error('Error updating item:', error)
+      alert('Failed to update the item. Please try again.')
       setLoading(false)
     }
   }
@@ -77,7 +126,7 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Add New Item</Button>
+        {trigger || <Button variant="outline">Edit</Button>}
       </DialogTrigger>
       <DialogContent>
         {loading ? (
@@ -85,11 +134,11 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Add New Item</DialogTitle>
+              <DialogTitle>Edit Item</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <Label htmlFor="image">Image</Label>
+                <Label htmlFor="image">Image (Optional)</Label>
                 <Input
                   id="image"
                   type="file"
@@ -100,6 +149,11 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
                     }
                   }}
                 />
+                {!file && item.picture && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Current image will be kept if no new image is selected
+                  </p>
+                )}
               </div>
               <div>
                 <Label htmlFor="type">Type</Label>
@@ -131,7 +185,7 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
                 <Controller
                   name="description"
                   control={control}
-                  defaultValue=""
+                  defaultValue={item.description || ''}
                   render={({ field }) => (
                     <Input
                       id="description"
@@ -172,7 +226,7 @@ export default function AddItemModal({ onAdd }: AddItemModalProps) {
                 />
               </div>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Uploading...' : 'Add Item'}
+                {loading ? 'Saving...' : 'Save Changes'}
               </Button>
             </form>
           </>

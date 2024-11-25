@@ -39,23 +39,26 @@ export default function ItemCard({ item }: ItemCardProps) {
         onClick={() => setIsDialogOpen(true)}
       >
         <div className="flex h-full">
-          <div className="relative w-1/2 h-full">
+          <div className="relative h-full  bg-stone-100 border-r-2 border-black">
             {item.picture && (
               <Image
                 src={item.picture}
                 alt={item.name}
                 width={150}
                 height={150}
-                className="object-cover rounded-md"
+                className="object-cover rounded-md p-1  shadow"
               />
             )}
           </div>
           <CardContent className="flex flex-col justify-between w-1/2 p-4">
             <div>
-              <h3 className="mb-2 text-lg font-semibold">{item.name}</h3>
+              <h3 className="mb-2 text-lg font-semibold break-words overflow-hidden line-clamp-1">
+                {item.description}
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Times Worn: <span className="font-bold">{timesWorn}</span>
               </p>
+              <p className="text-sm text-muted-foreground">{item.name}</p>
             </div>
             <div className="flex justify-end">
               <Button
