@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { auth } from '@clerk/nextjs/server'
 
-const prisma = new PrismaClient()
+import prisma from '@/lib/prisma'
 
 async function createWardrobeItem(userId: string, clothingItemId: number) {
   const wardrobeItem = await prisma.wardrobeItem.create({
@@ -18,7 +17,7 @@ async function createWardrobeItem(userId: string, clothingItemId: number) {
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   const data = await req.json()
-  const { type, image, color } = await data
+  const { type, image, color, description } = await data
   const name = [color, type]
   const newName = name.join(' ')
 
@@ -31,12 +30,16 @@ export async function POST(req: NextRequest) {
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
+  if (!description) {
+    data.description = ''
+  }
 
   try {
     const newItem = await prisma.clothingItem.create({
       data: {
         type: type.toUpperCase() as ClothingType,
         picture: image,
+        description,
         color: color.toUpperCase() as Color,
         name: newName.toLowerCase()
       }

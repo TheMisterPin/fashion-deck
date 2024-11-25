@@ -130,6 +130,7 @@ declare global {
       | 'WHITE'
       | 'YELLOW'
       | 'GREY'
+    description?: string
   }
 
   type Item = {
@@ -145,18 +146,23 @@ declare global {
       | 'YELLOW'
       | 'GREY'
     image: string
+    description?: string
   }
 
   type ResponseClothingItem = {
     id: number
     type: ClothingType
     name: string
+    occasions: Occasion[]
+    description: string | null
     color: Color | null
     picture: string | null
     timesWorn: number
     wornWith: {
       id: number
       type: ClothingType
+      description: string | null
+      occasions: Occasion[]
       name: string
       color: Color | null
       picture: string | null
@@ -164,6 +170,7 @@ declare global {
     outfits: {
       id: number
       picture: string | null
+      occasion: Occasion | null
       timesWorn: number
       lastWorn: Date | null
     }[]

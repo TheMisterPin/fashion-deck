@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from 'axios'
 
-export async function createNewClothingItem({ item } :{ item : Item }) {
+export async function createNewClothingItem({ item }: { item: Item }) {
   try {
     await axios.post('/api/clothing', item)
   } catch (error) {

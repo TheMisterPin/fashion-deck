@@ -11,7 +11,7 @@ body {
     text-wrap: balance;
   }
 }
-.dev{
+.dev {
   border: solid pink 4px;
 }
 @layer base {
@@ -77,4 +77,15 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.drop {
+  box-shadow: inset 0px 0px 20px hsl(var(--primary));
+}
+.drop-sm {
+  box-shadow: inset 0px 0px 7px hsl(var(--primary-600));
+}
+
+.shadow {
+  filter: drop-shadow(2px 2px 5px #716161);
 }
