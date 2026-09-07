@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import { Shirt } from 'lucide-react'
 import { PiPants as Pants, PiHoodie as Sweater } from 'react-icons/pi'
 import { GiConverseShoe as Shoe } from 'react-icons/gi'
-import Image from 'next/image'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -20,6 +19,7 @@ import ClothingItemSelector from './clothing-item-selector'
 import { useWardrobeContext } from '@/context/wardrobe-context'
 import { createStackedImage } from '@/utils/images'
 import { createOutfit } from '@/controllers/outfits'
+import OutfitPreview from './outfit-preview'
 
 enum Occasion {
   CASUAL = 'CASUAL',
@@ -64,8 +64,6 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
 
       setStackedImageBlob(blob)
     }
-
-    generateStackedImage()
 
     generateStackedImage()
   }, [selectedItems])
@@ -149,24 +147,12 @@ export default function OutfitForm({ onSubmitSuccess }: OutfitFormProps) {
       )}
       <div className="mt-4">
         <h3 className="mb-2 font-semibold">Selected Items:</h3>
-        <div className="flex flex-wrap gap-2">
-          {selectedItems
-            .sort((a, b) => {
-              const order = ['SHIRT', 'JUMPER', 'PANTS', 'SHOES']
-
-              return order.indexOf(a.type) - order.indexOf(b.type)
-            })
-            .map((item) => (
-              <div key={item.id} className="relative w-40 h-40">
-                <Image
-                  src={item.picture || ''}
-                  alt={item.name || 'No Image'}
-                  fill
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
-            ))}
-        </div>
+        <OutfitPreview
+          imageUrls={selectedItems.map((item) => item.picture)}
+          alt="Selected outfit preview"
+          className="mx-auto h-64 w-64 rounded-md"
+          layout="stack"
+        />
       </div>
 
       <div className="mt-4">

@@ -16,6 +16,7 @@ import {
 import ConfirmDialog from '@/components/ui/confirm-dialog'
 import { deleteOuftit } from '@/controllers/outfits'
 import { useWardrobeContext } from '@/context/wardrobe-context'
+import OutfitPreview from './blocks/outfit-preview'
 
 interface OutfitCardProps {
   outfit: Outfit
@@ -52,19 +53,13 @@ function OutfitDetails({
         </DialogHeader>
         <div className="grid grid-cols-[1fr_2fr] gap-4">
           <div>
-            {outfit.picture ? (
-              <Image
-                src={outfit.picture}
-                alt={`Outfit ${outfit.id}`}
-                width={150}
-                height={150}
-                className="rounded-md object-cover"
-              />
-            ) : (
-              <div className="flex h-[150px] w-[150px] items-center justify-center rounded-md bg-muted">
-                <span className="text-muted-foreground">No Image</span>
-              </div>
-            )}
+            <OutfitPreview
+              imageUrls={outfit.preview}
+              fallbackUrl={outfit.picture}
+              seed={outfit.id}
+              alt={`Outfit ${outfit.id}`}
+              className="h-[150px] w-[150px] rounded-md"
+            />
           </div>
           <div className="space-y-2">
             <p>
@@ -211,19 +206,13 @@ export default function OutfitCard({
       >
         <div className="flex h-full">
           <div className="relative h-full w-1/2">
-            {outfit.picture ? (
-              <Image
-                src={outfit.picture}
-                alt={`Outfit ${outfit.id}`}
-                width={150}
-                height={150}
-                className="rounded-md object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-muted">
-                <span className="text-muted-foreground">No Image</span>
-              </div>
-            )}
+            <OutfitPreview
+              imageUrls={outfit.preview}
+              fallbackUrl={outfit.picture}
+              seed={outfit.id}
+              alt={`Outfit ${outfit.id}`}
+              className="h-full min-h-[150px] w-full"
+            />
           </div>
           <CardContent className="flex w-1/2 flex-col justify-between p-4">
             <div>
