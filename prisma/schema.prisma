@@ -46,8 +46,6 @@ model ClothingItem {
   material    String?
   color       Color?
   picture     String?
-  timesWorn   Int            @default(0)
-  lastWorn    DateTime?
   isFavorite  Boolean        @default(false)
   isAvailable Boolean        @default(true)
   isDeleted   Boolean        @default(false)
@@ -98,6 +96,8 @@ model User {
 model WardrobeItem {
   userId         String
   clothingItemId Int
+  timesWorn      Int          @default(0)
+  lastWorn       DateTime?
   clothingItem   ClothingItem @relation("ClothingItemToWardrobeItem", fields: [clothingItemId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [clerkId])
 

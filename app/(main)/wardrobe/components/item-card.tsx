@@ -27,10 +27,7 @@ export default function ItemCard({ item }: ItemCardProps) {
     refreshOutfitData()
   }
 
-  const timesWorn = item.outfits.reduce(
-    (sum, outfit) => sum + outfit.timesWorn,
-    0
-  )
+  const timesWorn = item.timesWorn
 
   return (
     <>

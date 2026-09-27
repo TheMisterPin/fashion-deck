@@ -72,8 +72,6 @@ declare global {
     name?: string | null
     color?: Color | null
     picture?: string | null
-    timesWorn: number
-    lastWorn?: Date | null
     isFavorite: boolean
     isAvailable: boolean
     isDeleted: boolean
@@ -109,6 +107,8 @@ declare global {
     clothingItemId: number
     user: User
     isAvailable: ClothingItem['isAvailable']
+    timesWorn: number
+    lastWorn?: Date | null
     clothingItem: ClothingItem
   }
 
@@ -159,6 +159,7 @@ declare global {
     color: Color | null
     picture: string | null
     timesWorn: number
+    lastWorn: Date | null
     wornWith: {
       id: number
       type: ClothingType

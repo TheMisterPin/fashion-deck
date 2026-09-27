@@ -21,20 +21,20 @@ export async function PUT(
   }
 
   try {
-    const owned = await prisma.wardrobeItem.findUnique({
-      where: { userId_clothingItemId: { userId, clothingItemId: itemId } }
-    })
-
-    if (!owned) {
-      return NextResponse.json({ message: 'Item not found' }, { status: 404 })
-    }
-
-    const updatedItem = await prisma.clothingItem.update({
-      where: { id: itemId },
+    const result = await prisma.wardrobeItem.updateMany({
+      where: { userId, clothingItemId: itemId },
       data: {
         lastWorn: new Date(),
         timesWorn: { increment: 1 }
       }
+    })
+
+    if (result.count === 0) {
+      return NextResponse.json({ message: 'Item not found' }, { status: 404 })
+    }
+
+    const updatedItem = await prisma.wardrobeItem.findUniqueOrThrow({
+      where: { userId_clothingItemId: { userId, clothingItemId: itemId } }
     })
 
     return NextResponse.json({ updatedItem })
