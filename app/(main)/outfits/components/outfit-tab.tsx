@@ -8,9 +8,6 @@ import OutfitCard from './outfit-card'
 
 export default function OutfitTab({ outfits }: { outfits: Outfit[] }) {
   const [selectedCategory, setSelectedCategory] = useState('Casual')
-  const [selectedOutfits, setSelectedOutfits] = useState<Outfit[]>(
-    outfits || []
-  )
   const categories = ['Formal', 'Casual', 'Sport', 'Work']
 
   const getCategoryOutfits = (category: string): Outfit[] => {
@@ -31,8 +28,9 @@ export default function OutfitTab({ outfits }: { outfits: Outfit[] }) {
 
   function handleClick(category: string) {
     setSelectedCategory(category)
-    setSelectedOutfits(getCategoryOutfits(category))
   }
+
+  const selectedOutfits = getCategoryOutfits(selectedCategory)
 
   const handleEdit = (id: number) => {
     console.log(`Editing outfit ${id}`)

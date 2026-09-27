@@ -30,6 +30,7 @@ export default function OutfitPage() {
           {wardrobeItems && (
             <RandomOutfitGenerator
               wardrobeItems={wardrobeItems}
+              savedOutfits={outfits ?? []}
               onOutfitSaved={handleOutfitSaved}
             />
           )}

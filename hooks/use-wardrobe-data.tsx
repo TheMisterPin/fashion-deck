@@ -35,20 +35,23 @@ export function useWardrobeData() {
     }
   }, [wardrobeItems, setWardrobeItems])
 
-  const loadOutfitData = useCallback(async () => {
-    if (outfits.length > 0) {
-      return
-    }
+  const loadOutfitData = useCallback(
+    async (force = false) => {
+      if (!force && outfits.length > 0) {
+        return
+      }
 
-    try {
-      const fetchedOutfits = await getUserOutfits()
+      try {
+        const fetchedOutfits = await getUserOutfits()
 
-      setOutfits(fetchedOutfits)
-    } catch (error) {
-      console.error('Error fetching outfits:', error)
-      toast.error('Failed to fetch outfits')
-    }
-  }, [outfits, setOutfits])
+        setOutfits(fetchedOutfits)
+      } catch (error) {
+        console.error('Error fetching outfits:', error)
+        toast.error('Failed to fetch outfits')
+      }
+    },
+    [outfits, setOutfits]
+  )
 
   const login = useCallback(async () => {
     setIsLoading(true)
@@ -85,9 +88,8 @@ export function useWardrobeData() {
   }, [setWardrobeItems, loadItemsData])
 
   const refreshOutfitData = useCallback(() => {
-    setOutfits([])
-    loadOutfitData()
-  }, [setOutfits, loadOutfitData])
+    void loadOutfitData(true)
+  }, [loadOutfitData])
 
   const clearStorage = useCallback(() => {
     setWardrobeItems(null)

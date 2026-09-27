@@ -1,17 +1,5 @@
 import axios from 'axios'
-
-export const generateRandomOutfit = (
-  wardrobeItems: ResponseWardrobe
-): ResponseClothingItem[] => {
-  const shirt =
-    wardrobeItems.Shirt[Math.floor(Math.random() * wardrobeItems.Shirt.length)]
-  const pants =
-    wardrobeItems.Pants[Math.floor(Math.random() * wardrobeItems.Pants.length)]
-  const shoes =
-    wardrobeItems.Shoes[Math.floor(Math.random() * wardrobeItems.Shoes.length)]
-
-  return [shirt, pants, shoes]
-}
+export { getOutfitCombinations, outfitKey, pickOutfit } from './generator'
 
 export const saveOutfit = async (
   randomOutfit: ResponseClothingItem[],
