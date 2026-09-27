@@ -53,7 +53,8 @@ declare global {
     isWorn: boolean
     createdAt: Date
     updatedAt: Date
-    items: OutfitItem[]
+    // The outfits API returns the clothing items flattened to their IDs.
+    items: { id: number }[]
     userId?: string | null
     User?: User | null
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Shuffle } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
@@ -15,14 +15,17 @@ import {
 import { Button } from '@/components/ui/button'
 import { createStackedImage } from '@/utils/images'
 import { createOutfit } from '@/controllers/outfits'
+import { outfitKey, pickOutfit } from '@/utils/outfits/generator'
 
 interface RandomOutfitGeneratorProps {
   wardrobeItems: ResponseWardrobe
+  savedOutfits: Outfit[]
   onOutfitSaved: () => void
 }
 
 export default function RandomOutfitGenerator({
   wardrobeItems,
+  savedOutfits,
   onOutfitSaved
 }: RandomOutfitGeneratorProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -31,30 +34,34 @@ export default function RandomOutfitGenerator({
   >(null)
   const [outfitBlob, setOutfitBlob] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const shownKeys = useRef(new Set<string>())
+  const blobUrl = useRef<string | null>(null)
 
-  const generateRandomOutfit = () => {
-    const shirt =
-      wardrobeItems.Shirt[
-        Math.floor(Math.random() * wardrobeItems.Shirt.length)
-      ]
-    const pants =
-      wardrobeItems.Pants[
-        Math.floor(Math.random() * wardrobeItems.Pants.length)
-      ]
-    const shoes =
-      wardrobeItems.Shoes[
-        Math.floor(Math.random() * wardrobeItems.Shoes.length)
-      ]
+  useEffect(
+    () => () => {
+      if (blobUrl.current) URL.revokeObjectURL(blobUrl.current)
+    },
+    []
+  )
 
-    return [shirt, pants, shoes]
+  const closePreview = () => {
+    setIsModalOpen(false)
+    if (blobUrl.current) URL.revokeObjectURL(blobUrl.current)
+    blobUrl.current = null
+    setOutfitBlob(null)
   }
 
   const handleGenerateOutfit = async () => {
     setIsLoading(true)
     try {
-      const outfit = generateRandomOutfit()
+      const items = Object.values(wardrobeItems).flat()
+      const outfit = pickOutfit(items, savedOutfits, shownKeys.current)
 
-      setRandomOutfit(outfit)
+      if (!outfit) {
+        toast.info('No new outfits available. Add a shirt, pants, or shoes.')
+
+        return
+      }
 
       const imageUrls = outfit
         .map((item) => item.picture)
@@ -62,9 +69,12 @@ export default function RandomOutfitGenerator({
       const stackedImageBlob = await createStackedImage(imageUrls)
 
       if (stackedImageBlob) {
-        const blobUrl = URL.createObjectURL(stackedImageBlob)
+        if (blobUrl.current) URL.revokeObjectURL(blobUrl.current)
+        blobUrl.current = URL.createObjectURL(stackedImageBlob)
 
-        setOutfitBlob(blobUrl)
+        setOutfitBlob(blobUrl.current)
+        setRandomOutfit(outfit)
+        shownKeys.current.add(outfitKey(outfit))
         setIsModalOpen(true)
       } else {
         toast.error('Failed to generate outfit image')
@@ -89,7 +99,7 @@ export default function RandomOutfitGenerator({
 
       if (success) {
         onOutfitSaved()
-        setIsModalOpen(false)
+        closePreview()
       }
     } catch (error) {
       console.error('Error saving outfit:', error)
@@ -105,7 +115,13 @@ export default function RandomOutfitGenerator({
         <Shuffle className="w-4 h-4 mr-2" /> Generate Random Outfit
       </Button>
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={(open) => {
+          if (!open) closePreview()
+          else setIsModalOpen(true)
+        }}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Random Outfit</DialogTitle>
@@ -121,7 +137,7 @@ export default function RandomOutfitGenerator({
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+            <Button variant="outline" onClick={closePreview}>
               Discard
             </Button>
             <Button onClick={handleSaveOutfit} disabled={isLoading}>
