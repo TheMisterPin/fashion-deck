@@ -31,15 +31,15 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- Node.js (v14 or later)
-- npm or yarn
+- Node.js (v20 or later)
+- pnpm
 - Git
 
 ### Installation
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/fashion-deck.git
+   git clone https://github.com/TheMisterPin/fashion-deck.git
    ```
 
 2. Navigate to the project directory:
@@ -49,33 +49,19 @@ These instructions will get you a copy of the project up and running on your loc
 
 3. Install dependencies:
    ```
-   npm install
-   ```
-   or
-   ```
-   yarn install
+   pnpm install
    ```
 
-4. Set up environment variables:
-   Create a `.env.local` file in the root directory and add the following variables:
-   ```
-   DATABASE_URL="your-database-url"
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your-clerk-publishable-key"
-   CLERK_SECRET_KEY="your-clerk-secret-key"
-   ```
+4. Create a PostgreSQL database, copy `.env.example` to `.env.local`, and fill in the values. Keep `.env.local` out of Git. The Prisma schema already uses PostgreSQL.
 
-5. Run database migrations:
+5. Create the schema in your development database:
    ```
-   npx prisma migrate dev
+   pnpm database
    ```
 
 6. Start the development server:
    ```
-   npm run dev
-   ```
-   or
-   ```
-   yarn dev
+   pnpm dev
    ```
 
 The application should now be running on `http://localhost:3000`.
