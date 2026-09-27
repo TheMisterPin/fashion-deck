@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 
 import prisma from '@/lib/prisma'
+import { ownsWardrobeItems, validOutfitParts } from '@/lib/wardrobe-access'
+
+class UnownedOutfitItemsError extends Error {}
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
@@ -16,7 +19,7 @@ export async function POST(req: NextRequest) {
     const { outfitParts, picture, preview, occasion } = data
 
     // Validate input
-    if (!Array.isArray(outfitParts) || outfitParts.length === 0) {
+    if (!validOutfitParts(outfitParts)) {
       return NextResponse.json(
         { message: 'Invalid outfit parts' },
         { status: 400 }
@@ -31,9 +34,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Start a transaction to ensure atomicity
-    const result = await prisma.$transaction(async () => {
+    const result = await prisma.$transaction(async (tx) => {
+      if (!(await ownsWardrobeItems(tx, userId, outfitParts))) {
+        throw new UnownedOutfitItemsError()
+      }
+
       // Create the outfit with nested OutfitItems
-      const newOutfit = await prisma.outfit.create({
+      const newOutfit = await tx.outfit.create({
         data: {
           picture,
           preview,
@@ -63,12 +70,12 @@ export async function POST(req: NextRequest) {
       const wornWithPromises = outfitParts
         .flatMap((itemId, i) =>
           outfitParts.slice(i + 1).map((wornWithItemId) => [
-            prisma.wornWithItem.upsert({
+            tx.wornWithItem.upsert({
               where: { itemId_wornWithItemId: { itemId, wornWithItemId } },
               update: {},
               create: { itemId, wornWithItemId, timesWornTogether: 0 }
             }),
-            prisma.wornWithItem.upsert({
+            tx.wornWithItem.upsert({
               where: {
                 itemId_wornWithItemId: {
                   itemId: wornWithItemId,
@@ -115,6 +122,13 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
+    if (error instanceof UnownedOutfitItemsError) {
+      return NextResponse.json(
+        { message: 'One or more items are not in your wardrobe' },
+        { status: 404 }
+      )
+    }
+
     console.error('Error creating outfit:', error)
 
     return NextResponse.json(
@@ -124,8 +138,6 @@ export async function POST(req: NextRequest) {
       },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

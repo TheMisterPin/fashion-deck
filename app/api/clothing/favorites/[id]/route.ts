@@ -2,29 +2,34 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 
 import prisma from '@/lib/prisma'
+import { positiveItemId } from '@/lib/wardrobe-access'
 
-export async function PUT(req: NextRequest) {
-  const itemId = parseInt(req.nextUrl.searchParams.get('id')!)
+export async function PUT(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const { userId } = await auth()
-
-  if (!itemId) {
-    return NextResponse.json(
-      { message: 'Item ID is required' },
-      { status: 400 }
-    )
-  }
 
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
+
+  const itemId = positiveItemId(params.id)
+
+  if (!itemId) {
+    return NextResponse.json({ message: 'Invalid item ID' }, { status: 400 })
+  }
+
+  const actorUserId = userId
+  const clothingItemId = itemId
 
   async function toggleFavorite() {
     // Check if the item is already a favorite
     const favorite = await prisma.favoriteItem.findUnique({
       where: {
         userId_clothingItemId: {
-          userId: userId!,
-          clothingItemId: itemId
+          userId: actorUserId,
+          clothingItemId
         }
       }
     })
@@ -34,8 +39,8 @@ export async function PUT(req: NextRequest) {
       await prisma.favoriteItem.delete({
         where: {
           userId_clothingItemId: {
-            userId: userId!,
-            clothingItemId: itemId
+            userId: actorUserId,
+            clothingItemId
           }
         }
       })
@@ -45,8 +50,8 @@ export async function PUT(req: NextRequest) {
     // If it does not exist, add to favorites
     await prisma.favoriteItem.create({
       data: {
-        userId: userId!,
-        clothingItemId: itemId
+        userId: actorUserId,
+        clothingItemId
       }
     })
 
@@ -55,6 +60,14 @@ export async function PUT(req: NextRequest) {
 
   // Run the toggle favorite function and handle errors
   try {
+    const owned = await prisma.wardrobeItem.findUnique({
+      where: { userId_clothingItemId: { userId, clothingItemId: itemId } }
+    })
+
+    if (!owned) {
+      return NextResponse.json({ message: 'Item not found' }, { status: 404 })
+    }
+
     return await toggleFavorite()
   } catch (error) {
     console.error('Error updating favorites:', error)

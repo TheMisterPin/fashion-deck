@@ -1,16 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 
 import prisma from '@/lib/prisma'
+import { positiveItemId } from '@/lib/wardrobe-access'
 
-export async function PUT(req: NextRequest) {
-  const itemId = parseInt(req.nextUrl.searchParams.get('id')!)
-  const updatedItem = await prisma.clothingItem.update({
-    where: { id: itemId },
-    data: {
-      lastWorn: new Date(),
-      timesWorn: { increment: 1 }
+export async function PUT(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+  }
+
+  const itemId = positiveItemId(params.id)
+
+  if (!itemId) {
+    return NextResponse.json({ message: 'Invalid item ID' }, { status: 400 })
+  }
+
+  try {
+    const owned = await prisma.wardrobeItem.findUnique({
+      where: { userId_clothingItemId: { userId, clothingItemId: itemId } }
+    })
+
+    if (!owned) {
+      return NextResponse.json({ message: 'Item not found' }, { status: 404 })
     }
-  })
 
-  return NextResponse.json({ updatedItem })
+    const updatedItem = await prisma.clothingItem.update({
+      where: { id: itemId },
+      data: {
+        lastWorn: new Date(),
+        timesWorn: { increment: 1 }
+      }
+    })
+
+    return NextResponse.json({ updatedItem })
+  } catch (error) {
+    console.error('Error marking item worn:', error)
+
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    )
+  }
 }
