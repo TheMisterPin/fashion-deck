@@ -192,7 +192,7 @@ export default function OutfitCard({
     try {
       await deleteOuftit(outfit.id)
       toast.success('Outfit deleted')
-      refreshOutfitData()
+      await refreshOutfitData()
 
       setIsDialogOpen(false)
       setIsConfirmOpen(false)

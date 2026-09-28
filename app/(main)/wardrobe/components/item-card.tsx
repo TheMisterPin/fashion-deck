@@ -44,7 +44,7 @@ export default function ItemCard({ item }: ItemCardProps) {
     try {
       await deleteClothingItem(item.id)
       await refreshItemsData()
-      refreshOutfitData()
+      await refreshOutfitData()
     } catch (error) {
       console.error('Error deleting clothing item:', error)
       toast.error('Could not delete clothing item')

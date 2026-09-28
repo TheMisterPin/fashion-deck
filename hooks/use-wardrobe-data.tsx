@@ -75,7 +75,7 @@ export function useWardrobeData() {
   }, [loadItemsData])
 
   const refreshOutfitData = useCallback(() => {
-    void loadOutfitData()
+    return loadOutfitData()
   }, [loadOutfitData])
 
   const clearStorage = useCallback(() => {
