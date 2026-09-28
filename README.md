@@ -1,6 +1,6 @@
 # Fashion Deck
 
-Fashion Deck is an innovative Next.js application designed to revolutionize wardrobe management. With this app, users can effortlessly organize their clothing collection, create stylish outfits, and receive personalized fashion recommendations.
+Fashion Deck is a Next.js wardrobe app. Sign in with Clerk, add clothing to your wardrobe, save outfits, and generate combinations from the items you own.
 
 ## 🚀 We're Looking for Contributors!
 
@@ -31,8 +31,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- Node.js (v20 or later)
-- pnpm
+- Node.js 24 (used by CI and the built-in TypeScript test runner)
+- pnpm 10
 - Git
 
 ### Installation
@@ -78,11 +78,15 @@ These instructions will get you a copy of the project up and running on your loc
 
 The application should now be running on `http://localhost:3000`.
 
+### Development checks
+
+Run `pnpm typecheck`, `pnpm lint`, and `pnpm test` before opening a pull request. CI runs these commands on pull requests and pushes to `main`. The current tests cover wardrobe ownership helpers and outfit generation; API and UI flows still need broader coverage.
+
 ## Contributing
 
 We're excited to have you contribute to Fashion Deck! Here's how you can help:
 
-1. Check out our [GitHub Project Board](https://github.com/users/your-username/projects/fashion-deck) to see what needs to be done. We've organized tasks by priority and current stage of development.
+1. Check out our [GitHub Project Board](https://github.com/users/TheMisterPin/projects/10/views/1) to see what needs to be done.
 
 2. Look for open issues or create a new one if you have ideas or find bugs.
 

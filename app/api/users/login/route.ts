@@ -1,18 +1,7 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { auth } from '@clerk/nextjs/server'
 
-const prisma = new PrismaClient()
-
-async function createUser(clerkId: string) {
-  const user = await prisma.user.create({
-    data: {
-      clerkId
-    }
-  })
-
-  return user
-}
+import prisma from '@/lib/prisma'
 
 export async function POST() {
   const { userId } = await auth()
@@ -20,25 +9,12 @@ export async function POST() {
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
-  const user = await prisma.user.findUnique({
-    where: {
-      clerkId: userId
-    },
-    include: {
-      wardrobe: { include: { clothingItem: true } },
-      favorites: true,
-      outfits: true
-    }
+  // The data provider may mount twice in development or in separate tabs.
+  await prisma.user.upsert({
+    where: { clerkId: userId },
+    update: {},
+    create: { clerkId: userId }
   })
 
-  if (!user) {
-    const newUser = await createUser(userId)
-
-    return NextResponse.json(
-      { message: 'User created', user: newUser },
-      { status: 201 }
-    )
-  }
-
-  return NextResponse.json({ message: 'Welcome Back', user }, { status: 200 })
+  return NextResponse.json({ message: 'Ready' })
 }

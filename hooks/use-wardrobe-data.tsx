@@ -1,110 +1,82 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '@clerk/nextjs'
 import { toast } from 'sonner'
 import axios from 'axios'
 
 import { getUserOutfits } from '@/app/controllers/outfits'
-import useLocalStorage from './useLocalStorage'
 
 export function useWardrobeData() {
-  const { isSignedIn, isLoaded } = useAuth()
-  const [wardrobeItems, setWardrobeItems] =
-    useLocalStorage<ResponseWardrobe | null>('wardrobeItems', null)
-  const [outfits, setOutfits] = useLocalStorage<Outfit[]>('outfitItems', [])
-  const [isLoading, setIsLoading] = useState(false)
+  const [wardrobeItems, setWardrobeItems] = useState<ResponseWardrobe | null>(null)
+  const [outfits, setOutfits] = useState<Outfit[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const loadItemsData = useCallback(async () => {
-    if (wardrobeItems) {
-      return
-    }
-
     try {
       const response = await fetch('/api/wardrobe')
 
+      if (response.status === 404) {
+        setWardrobeItems({ Shirt: [], Pants: [], Shoes: [], Jumper: [] })
+        return
+      }
       if (!response.ok) {
         throw new Error('Failed to fetch wardrobe items')
       }
       const result: ApiResponse = await response.json()
-
       setWardrobeItems(result.data)
-      toast.success(result.message)
     } catch (error) {
       toast.error('Failed to load wardrobe items')
     }
-  }, [wardrobeItems, setWardrobeItems])
+  }, [])
 
-  const loadOutfitData = useCallback(
-    async (force = false) => {
-      if (!force && outfits.length > 0) {
-        return
-      }
-
-      try {
-        const fetchedOutfits = await getUserOutfits()
-
-        setOutfits(fetchedOutfits)
-      } catch (error) {
-        console.error('Error fetching outfits:', error)
-        toast.error('Failed to fetch outfits')
-      }
-    },
-    [outfits, setOutfits]
-  )
-
-  const login = useCallback(async () => {
-    setIsLoading(true)
+  const loadOutfitData = useCallback(async () => {
     try {
-      const response = await axios.post('/api/users/login')
-
-      if (response.status === 200) {
-        toast.success('Logged in successfully')
-        await Promise.all([loadItemsData(), loadOutfitData()])
-      }
+      const fetchedOutfits = await getUserOutfits()
+      setOutfits(fetchedOutfits ?? [])
     } catch (error) {
-      toast.error('Login failed')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [loadItemsData, loadOutfitData])
-
-  useEffect(() => {
-    if (isLoaded) {
-      if (isSignedIn) {
-        setIsLoading(true)
-        Promise.all([loadItemsData(), loadOutfitData()]).finally(() =>
-          setIsLoading(false)
-        )
-      } else {
-        login()
-      }
+      console.error('Error fetching outfits:', error)
+      toast.error('Failed to fetch outfits')
     }
   }, [])
 
-  const refreshItemsData = useCallback(() => {
-    setWardrobeItems(null)
-    loadItemsData()
-  }, [setWardrobeItems, loadItemsData])
+  useEffect(() => {
+    // Older releases stored private data under keys shared by all accounts.
+    localStorage.removeItem('wardrobeItems')
+    localStorage.removeItem('outfitItems')
 
-  const refreshOutfitData = useCallback(() => {
-    void loadOutfitData(true)
-  }, [loadOutfitData])
+    let active = true
+
+    async function initialize() {
+      try {
+        await axios.post('/api/users/login')
+        if (active) {
+          await Promise.all([loadItemsData(), loadOutfitData()])
+        }
+      } catch (error) {
+        toast.error('Failed to initialize your wardrobe')
+      } finally {
+        if (active) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    void initialize()
+    return () => { active = false }
+  }, [loadItemsData, loadOutfitData])
 
   const clearStorage = useCallback(() => {
     setWardrobeItems(null)
     setOutfits([])
-    if (typeof window !== 'undefined') {
-      window.location.reload()
-    }
-  }, [setWardrobeItems, setOutfits])
+    window.location.reload()
+  }, [])
 
   return {
     wardrobeItems,
     outfits,
     isLoading,
-    refreshItemsData,
-    refreshOutfitData,
+    refreshItemsData: loadItemsData,
+    refreshOutfitData: () => { void loadOutfitData() },
     clearStorage
   }
 }
