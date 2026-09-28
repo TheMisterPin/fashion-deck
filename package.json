@@ -10,6 +10,8 @@
 		"start": "next start",
 		"lint": "next lint",
 		"database": "env-cmd -f .env.local -- prisma db push",
+		"database:reset:seed": "env-cmd -f .env.local -- prisma db push --force-reset && pnpm seed",
+		"seed": "env-cmd -f .env.local -- node prisma/seed.mjs",
 		"generate": "env-cmd -f .env.local -- prisma generate",
 		"postinstall": "prisma generate"
 	},
