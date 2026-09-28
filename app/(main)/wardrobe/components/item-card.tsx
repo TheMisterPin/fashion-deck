@@ -30,7 +30,7 @@ export default function ItemCard({ item }: ItemCardProps) {
       const response = await axios.put(`/api/clothing/favorites/${item.id}`)
 
       setIsFavorite(response.data.isFavorite)
-      await refreshItemsData()
+      await Promise.all([refreshItemsData(), refreshOutfitData()])
     } catch (error) {
       console.error('Error updating favorite:', error)
       toast.error('Could not update favorite')
