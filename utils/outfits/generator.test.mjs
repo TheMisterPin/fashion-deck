@@ -29,8 +29,12 @@ test('does not repeat a preview until remaining candidates are shown', () => {
     { items: wardrobe.filter((part) => part.id !== 1) }]), null)
 })
 
-test('prefers favorites, then cycles through other combinations', () => {
-  const withFavorite = wardrobe.map((part) => ({
+test('uses favorites as a tie-breaker after freshness and wear count', () => {
+  const tiedWardrobe = [
+    item(1, 'Shirt', 0), item(2, 'Shirt', 0),
+    item(3, 'Pants'), item(4, 'Shoes')
+  ]
+  const withFavorite = tiedWardrobe.map((part) => ({
     ...part,
     isFavorite: part.id === 1
   }))
