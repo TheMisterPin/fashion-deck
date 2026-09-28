@@ -45,7 +45,10 @@ export async function PUT(
         }
       })
 
-      return NextResponse.json({ message: 'Item removed from favorites' })
+      return NextResponse.json({
+        message: 'Item removed from favorites',
+        isFavorite: false
+      })
     }
     // If it does not exist, add to favorites
     await prisma.favoriteItem.create({
@@ -55,7 +58,10 @@ export async function PUT(
       }
     })
 
-    return NextResponse.json({ message: 'Item added to favorites' })
+    return NextResponse.json({
+      message: 'Item added to favorites',
+      isFavorite: true
+    })
   }
 
   // Run the toggle favorite function and handle errors

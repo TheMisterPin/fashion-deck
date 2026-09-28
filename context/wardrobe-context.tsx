@@ -4,7 +4,7 @@ type WardrobeContextType = {
   wardrobeItems: ResponseWardrobe | null
   outfits: Outfit[] | null
   isLoading: boolean
-  refreshItemsData: () => void
+  refreshItemsData: () => Promise<void>
   refreshOutfitData: () => void
   clearStorage: () => void
 }

@@ -159,6 +159,7 @@ declare global {
     color: Color | null
     picture: string | null
     timesWorn: number
+    isFavorite: boolean
     lastWorn: Date | null
     wornWith: {
       id: number

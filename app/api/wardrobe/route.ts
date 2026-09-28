@@ -25,6 +25,10 @@ export async function GET() {
             description: true,
             color: true,
             picture: true,
+            favorites: {
+              where: { userId },
+              select: { clothingItemId: true }
+            },
             wornWith: {
               include: {
                 wornWithItem: {
@@ -109,6 +113,7 @@ export async function GET() {
           occasions: item.clothingItem.occasions as Occasion[],
           timesWorn: item.timesWorn,
           lastWorn: item.lastWorn,
+          isFavorite: item.clothingItem.favorites.length > 0,
           wornWith: wornWithItems,
           outfits: outfits
         }

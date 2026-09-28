@@ -19,9 +19,11 @@ export function useWardrobeData() {
         setWardrobeItems({ Shirt: [], Pants: [], Shoes: [], Jumper: [] })
         return
       }
+
       if (!response.ok) {
         throw new Error('Failed to fetch wardrobe items')
       }
+
       const result: ApiResponse = await response.json()
       setWardrobeItems(result.data)
     } catch (error) {
@@ -62,21 +64,34 @@ export function useWardrobeData() {
     }
 
     void initialize()
-    return () => { active = false }
+
+    return () => {
+      active = false
+    }
   }, [loadItemsData, loadOutfitData])
+
+  const refreshItemsData = useCallback(() => {
+    return loadItemsData()
+  }, [loadItemsData])
+
+  const refreshOutfitData = useCallback(() => {
+    void loadOutfitData()
+  }, [loadOutfitData])
 
   const clearStorage = useCallback(() => {
     setWardrobeItems(null)
     setOutfits([])
-    window.location.reload()
+    if (typeof window !== 'undefined') {
+      window.location.reload()
+    }
   }, [])
 
   return {
     wardrobeItems,
     outfits,
     isLoading,
-    refreshItemsData: loadItemsData,
-    refreshOutfitData: () => { void loadOutfitData() },
+    refreshItemsData,
+    refreshOutfitData,
     clearStorage
   }
 }
