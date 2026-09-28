@@ -91,8 +91,8 @@ export default function ItemDetails(props: Props) {
               </p>
               <p>
                 <strong>Last Worn:</strong>{' '}
-                {item.outfits[0]?.lastWorn
-                  ? new Date(item.outfits[0].lastWorn).toLocaleDateString()
+                {item.lastWorn
+                  ? new Date(item.lastWorn).toLocaleDateString()
                   : 'Never'}
               </p>
             </div>

@@ -59,6 +59,12 @@ These instructions will get you a copy of the project up and running on your loc
    pnpm database
    ```
 
+   For an existing database created before per-user wear tracking, run
+   `prisma/manual/20260927_wardrobe_wear.sql` once against PostgreSQL during a
+   maintenance window, then deploy the new code. It copies existing wear values to each wardrobe
+   owner and removes the old global columns. If an item was shared, the old
+   global count cannot be split accurately between users.
+
 6. Start the development server:
    ```
    pnpm dev
