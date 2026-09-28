@@ -42,10 +42,16 @@ export function pickOutfit(
   // Cycle through the remaining combinations before showing one again.
   const fresh = available.filter((outfit) => !shownKeys.has(outfitKey(outfit)))
   const candidates = fresh.length ? fresh : available
+  const favoriteCount = (outfit: ResponseClothingItem[]) =>
+    outfit.filter((item) => item.isFavorite).length
+  const mostFavorites = Math.max(...candidates.map(favoriteCount))
+  const preferred = candidates.filter(
+    (outfit) => favoriteCount(outfit) === mostFavorites
+  )
   const wearCount = (outfit: OutfitParts[]) =>
     outfit.reduce((total, item) => total + item.timesWorn, 0)
-  const fewestWears = Math.min(...candidates.map(wearCount))
-  const leastWorn = candidates.filter(
+  const fewestWears = Math.min(...preferred.map(wearCount))
+  const leastWorn = preferred.filter(
     (outfit) => wearCount(outfit) === fewestWears
   )
 

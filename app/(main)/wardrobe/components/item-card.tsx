@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Star, Trash2 } from 'lucide-react'
+import axios from 'axios'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,17 +16,39 @@ interface ItemCardProps {
 
 export default function ItemCard({ item }: ItemCardProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isFavorite, setIsFavorite] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(item.isFavorite)
+  const [isSavingFavorite, setIsSavingFavorite] = useState(false)
   const { refreshItemsData, refreshOutfitData } = useWardrobeContext()
-  const toggleFavorite = (e: React.MouseEvent) => {
+
+  useEffect(() => setIsFavorite(item.isFavorite), [item.isFavorite])
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    setIsFavorite(!isFavorite)
+    setIsSavingFavorite(true)
+
+    try {
+      const response = await axios.put(`/api/clothing/favorites/${item.id}`)
+
+      setIsFavorite(response.data.isFavorite)
+      await refreshItemsData()
+    } catch (error) {
+      console.error('Error updating favorite:', error)
+      toast.error('Could not update favorite')
+    } finally {
+      setIsSavingFavorite(false)
+    }
   }
-  const handleDelete = (e: React.MouseEvent) => {
+  const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    deleteClothingItem(item.id)
-    refreshItemsData()
-    refreshOutfitData()
+
+    try {
+      await deleteClothingItem(item.id)
+      await refreshItemsData()
+      refreshOutfitData()
+    } catch (error) {
+      console.error('Error deleting clothing item:', error)
+      toast.error('Could not delete clothing item')
+    }
   }
 
   const timesWorn = item.timesWorn
@@ -62,6 +86,8 @@ export default function ItemCard({ item }: ItemCardProps) {
                 variant="ghost"
                 size="icon"
                 onClick={toggleFavorite}
+                disabled={isSavingFavorite}
+                aria-pressed={isFavorite}
                 className="self-end"
                 aria-label={
                   isFavorite ? 'Remove from favorites' : 'Add to favorites'

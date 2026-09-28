@@ -28,3 +28,16 @@ test('does not repeat a preview until remaining candidates are shown', () => {
   assert.equal(pickOutfit(wardrobe, [{ items: wardrobe.filter((part) => part.id !== 2) },
     { items: wardrobe.filter((part) => part.id !== 1) }]), null)
 })
+
+test('prefers favorites, then cycles through other combinations', () => {
+  const withFavorite = wardrobe.map((part) => ({
+    ...part,
+    isFavorite: part.id === 1
+  }))
+
+  assert.equal(outfitKey(pickOutfit(withFavorite, [])), '1:3:4')
+  assert.equal(
+    outfitKey(pickOutfit(withFavorite, [], new Set(['1:3:4']))),
+    '2:3:4'
+  )
+})
