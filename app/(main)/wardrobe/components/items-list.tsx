@@ -7,18 +7,22 @@ import ItemCard from './item-card'
 export default function ItemsTab({ items }: { items: ResponseWardrobe }) {
   const [selectedCategory, setSelectedCategory] = useState('Shirts')
 
-  const categories = ['Shirts', 'Pants', 'Shoes', 'Jumpers']
+  const categories = ['Shirts', 'Pants', 'Shoes', 'Jumpers', 'Favorites']
 
   const getCategoryItems = (category: string): ResponseClothingItem[] => {
     switch (category) {
       case 'Shirts':
-        return items.Shirt
+        return items.Shirt ?? []
       case 'Pants':
-        return items.Pants
+        return items.Pants ?? []
       case 'Shoes':
-        return items.Shoes
+        return items.Shoes ?? []
       case 'Jumpers':
-        return items.Jumper
+        return items.Jumper ?? []
+      case 'Favorites':
+        return Object.values(items)
+          .flat()
+          .filter((item) => item.isFavorite)
       default:
         return []
     }
@@ -49,6 +53,13 @@ export default function ItemsTab({ items }: { items: ResponseWardrobe }) {
           transition={{ duration: 0.3 }}
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
+          {currentItems.length === 0 && (
+            <p className="col-span-full text-center text-muted-foreground">
+              {selectedCategory === 'Favorites'
+                ? 'Star clothing items to see them here.'
+                : 'No items in this category yet.'}
+            </p>
+          )}
           {currentItems.map((item) => (
             <motion.div
               key={item.id}

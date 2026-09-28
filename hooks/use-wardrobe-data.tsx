@@ -15,25 +15,34 @@ export function useWardrobeData() {
   const [outfits, setOutfits] = useLocalStorage<Outfit[]>('outfitItems', [])
   const [isLoading, setIsLoading] = useState(false)
 
-  const loadItemsData = useCallback(async () => {
-    if (wardrobeItems) {
-      return
-    }
-
-    try {
-      const response = await fetch('/api/wardrobe')
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch wardrobe items')
+  const loadItemsData = useCallback(
+    async (force = false) => {
+      if (!force && wardrobeItems) {
+        return
       }
-      const result: ApiResponse = await response.json()
 
-      setWardrobeItems(result.data)
-      toast.success(result.message)
-    } catch (error) {
-      toast.error('Failed to load wardrobe items')
-    }
-  }, [wardrobeItems, setWardrobeItems])
+      try {
+        const response = await fetch('/api/wardrobe')
+
+        if (response.status === 404) {
+          setWardrobeItems({ Shirt: [], Pants: [], Shoes: [], Jumper: [] })
+
+          return
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch wardrobe items')
+        }
+        const result: ApiResponse = await response.json()
+
+        setWardrobeItems(result.data)
+        toast.success(result.message)
+      } catch (error) {
+        toast.error('Failed to load wardrobe items')
+      }
+    },
+    [wardrobeItems, setWardrobeItems]
+  )
 
   const loadOutfitData = useCallback(
     async (force = false) => {
@@ -83,9 +92,8 @@ export function useWardrobeData() {
   }, [])
 
   const refreshItemsData = useCallback(() => {
-    setWardrobeItems(null)
-    loadItemsData()
-  }, [setWardrobeItems, loadItemsData])
+    return loadItemsData(true)
+  }, [loadItemsData])
 
   const refreshOutfitData = useCallback(() => {
     void loadOutfitData(true)
