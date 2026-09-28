@@ -59,6 +59,12 @@ These instructions will get you a copy of the project up and running on your loc
    pnpm database
    ```
 
+   For a disposable development database, set `SEED_CLERK_USER_ID` in
+   `.env.local` to your Clerk user ID and run `pnpm seed`. This creates 22
+   sample wardrobe items and six outfits. Re-running it skips existing seed
+   items and matching outfit combinations. To wipe the development database
+   and seed it again in one command, run `pnpm database:reset:seed`.
+
    For an existing database created before per-user wear tracking, run
    `prisma/manual/20260927_wardrobe_wear.sql` once against PostgreSQL during a
    maintenance window, then deploy the new code. It copies existing wear values to each wardrobe
